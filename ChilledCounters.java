@@ -10,5 +10,11 @@ public class ChilledCounters extends StorageUnit{
     public ChilledCounters() {
         this(3);
     }
+    public void setTemperature(double temperature) {
+    this.temperature = temperature;
+    System.out.println("Temperature set to: " + temperature + "°C");
+        
+    }
 
 }
+
