@@ -1,11 +1,13 @@
-public class Refrigerator {
+import java.util.ArrayList;
+public class Refrigerator extends StorageUnit{
     private int capacity;
-    private List<String> products;
+    private ArrayList<Product> product;
 
     public Refrigerator(int capacity) {
-        this.capacity = capacity;
-        this.products = new ArrayList<>();
+        super(capacity);
     }
-    
+    public Refrigerator() {
+        this(9);
+    }
     
 }
