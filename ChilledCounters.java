@@ -1,10 +1,10 @@
-public class ChilledCounters {
+import java.util.ArrayList;
+public class ChilledCounters extends StorageUnit{
     private int capacity;
-    private List<String> products;
+    private ArrayList<Product> product;
 
     public ChilledCounters(int capacity) {
-        this.capacity = capacity;
-        this.products = new ArrayList<>();
+        super(capacity);
     }
 
     public ChilledCounters() {
