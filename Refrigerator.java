@@ -9,5 +9,11 @@ public class Refrigerator extends StorageUnit{
     public Refrigerator() {
         this(9);
     }
+
+    public void setTemperature(double temperature) {
+    this.temperature = temperature;
+    System.out.println("Temperature set to: " + temperature + "°C");   
+    }
     
 }
+
