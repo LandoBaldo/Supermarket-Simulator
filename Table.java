@@ -1,10 +1,10 @@
-public class Table {
+import java.util.ArrayList;
+public class Table extends StorageUnit {
     private int capacity;
-    private List<String> products;
+    private ArrayList<Product> products;
 
     public Table(int capacity) {
-        this.capacity = capacity;
-        this.products = new ArrayList<>();
+        super(capacity);
     }
 
     public Table() {
