@@ -1,435 +1,213 @@
 
-abstract class Product {
-    protected String serialNumber;
-    protected String name;
-    protected String displayLocation;
-
-    public Product(String serialNumber, String name, String displayLocation) {
+public class Products {
+    private String serialNumber;
+    private String name;
+    private String displayLocation;
+    private String productType;
+    
+    // Constructor
+    public Products(String productType, String serialNumber, String name) {
+        this.productType = productType;
         this.serialNumber = serialNumber;
         this.name = name;
-        this.displayLocation = displayLocation;
+        this.displayLocation = determineLocation(productType);
     }
-
-    public abstract String getSerialNumberPrefix();
-
+    
+    // Determine location based on product type
+    private String determineLocation(String type) {
+        switch(type.toUpperCase()) {
+            // Chilled counter products
+            case "BEEF":
+            case "SEAFOOD":
+            case "CHICKEN":
+                return "Chilled counter";
+            
+            // Table products
+            case "BREAD":
+            case "EGGS":
+            case "FRUIT":
+            case "VEGETABLE":
+                return "Table";
+            
+            // Refrigerator products
+            case "MILK":
+            case "FROZEN":
+            case "CHEESE":
+                return "Refrigerator";
+            
+            // Shelf products (default)
+            case "CEREAL":
+            case "NOODLES":
+            case "SNACKS":
+            case "CANNED":
+            case "CONDIMENTS":
+            case "SOFTDRINK":
+            case "JUICE":
+            case "ALCOHOL":
+            case "CLEANING":
+            case "HOME":
+            case "HAIRCARE":
+            case "BODYCARE":
+            case "DENTAL":
+            case "CLOTHES":
+            case "STATIONERY":
+            case "PETFOOD":
+            default:
+                return "Shelf";
+        }
+    }
+    
+    // Get serial number prefix based on product type
+    public String getSerialNumberPrefix() {
+        switch(productType.toUpperCase()) {
+            case "BEEF": return "BEF";
+            case "SEAFOOD": return "SEA";
+            case "BREAD": return "BRD";
+            case "CEREAL": return "CER";
+            case "NOODLES": return "NDL";
+            case "SNACKS": return "SNK";
+            case "CANNED": return "CAN";
+            case "CONDIMENTS": return "CON";
+            case "EGGS": return "EGG";
+            case "SOFTDRINK": return "SFT";
+            case "JUICE": return "JUC";
+            case "ALCOHOL": return "ALC";
+            case "CLEANING": return "CLE";
+            case "HOME": return "HOM";
+            case "HAIRCARE": return "HAR";
+            case "BODYCARE": return "BOD";
+            case "DENTAL": return "DEN";
+            case "CLOTHES": return "CLO";
+            case "STATIONERY": return "STN";
+            case "PETFOOD": return "PET";
+            case "FRUIT": return "FRU";
+            case "VEGETABLE": return "VEG";
+            case "MILK": return "MLK";
+            case "FROZEN": return "FRZ";
+            case "CHEESE": return "CHS";
+            case "CHICKEN": return "CHK";
+            default: return "UNK";
+        }
+    }
+    
+    // Getters
     public String getSerialNumber() {
         return serialNumber;
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public String getDisplayLocation() {
         return displayLocation;
     }
-
+    
+    public String getProductType() {
+        return productType;
+    }
+    
+    // Setters
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public void setProductType(String productType) {
+        this.productType = productType;
+        this.displayLocation = determineLocation(productType);
+    }
+    
+    // Display product information
+    public void displayInfo() {
+        System.out.println("Product Type: " + productType);
+        System.out.println("Name: " + name);
+        System.out.println("Serial Number: " + serialNumber);
+        System.out.println("Display Location: " + displayLocation);
+        System.out.println("Serial Prefix: " + getSerialNumberPrefix());
+        System.out.println("-------------------");
+    }
+    
     @Override
     public String toString() {
-        return String.format("%s - %s (SN: %s, Location: %s)",
-                getClass().getSimpleName(), name, serialNumber, displayLocation);
+        return String.format("%s - %s (SN: %s, Location: %s)", 
+            productType, name, serialNumber, displayLocation);
     }
-}
-
-class BeefProduct extends Product {
-    public BeefProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Chilled counter");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "BEF";
-    }
-}
-
-class SeafoodProduct extends Product {
-    public SeafoodProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Chilled counter");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "SEA";
-    }
-}
-
-class BreadProduct extends Product {
-    public BreadProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Table");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "BRD";
-    }
-}
-
-class CerealProduct extends Product {
-    public CerealProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "CER";
-    }
-}
-
-class NoodlesProduct extends Product {
-    public NoodlesProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "NDL";
-    }
-}
-
-class SnacksProduct extends Product {
-    public SnacksProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "SNK";
-    }
-}
-
-class CannedGoodsProduct extends Product {
-    public CannedGoodsProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "CAN";
-    }
-}
-
-class CondimentsProduct extends Product {
-    public CondimentsProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "CON";
-    }
-}
-
-class EggsProduct extends Product {
-    public EggsProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Table");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "EGG";
-    }
-}
-
-class SoftDrinkProduct extends Product {
-    public SoftDrinkProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "SFT";
-    }
-}
-
-class JuiceProduct extends Product {
-    public JuiceProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "JUC";
-    }
-}
-
-class AlcoholProduct extends Product {
-    public AlcoholProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "ALC";
-    }
-}
-
-class CleaningAgentsProduct extends Product {
-    public CleaningAgentsProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "CLE";
-    }
-}
-
-class HomeEssentialsProduct extends Product {
-    public HomeEssentialsProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "HOM";
-    }
-}
-
-class HairCareProduct extends Product {
-    public HairCareProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "HAR";
-    }
-}
-
-class BodyCareProduct extends Product {
-    public BodyCareProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "BOD";
-    }
-}
-
-class DentalCareProduct extends Product {
-    public DentalCareProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "DEN";
-    }
-}
-
-class ClothesProduct extends Product {
-    public ClothesProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "CLO";
-    }
-}
-
-class StationeryProduct extends Product {
-    public StationeryProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "STN";
-    }
-}
-
-class PetFoodProduct extends Product {
-    public PetFoodProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Shelf");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "PET";
-    }
-}
-
-// Special Food Products (from second table)
-class FruitProduct extends Product {
-    public FruitProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Table");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "FRU";
-    }
-}
-
-class VegetableProduct extends Product {
-    public VegetableProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Table");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "VEG";
-    }
-}
-
-class MilkProduct extends Product {
-    public MilkProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Refrigerator");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "MLK";
-    }
-}
-
-class FrozenFoodProduct extends Product {
-    public FrozenFoodProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Refrigerator");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "FRZ";
-    }
-}
-
-class CheeseProduct extends Product {
-    public CheeseProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Refrigerator");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "CHS";
-    }
-}
-
-class ChickenProduct extends Product {
-    public ChickenProduct(String serialNumber, String name) {
-        super(serialNumber, name, "Chilled counter");
-    }
-
-    @Override
-    public String getSerialNumberPrefix() {
-        return "CHK";
-    }
-}
-
-// Product Factory
-class ProductFactory {
-    public static Product createProduct(String type, String serialNumber, String name) {
-        switch (type.toUpperCase()) {
-            // General products
-            case "BEEF":
-                return new BeefProduct(serialNumber, name);
-            case "SEAFOOD":
-                return new SeafoodProduct(serialNumber, name);
-            case "BREAD":
-                return new BreadProduct(serialNumber, name);
-            case "CEREAL":
-                return new CerealProduct(serialNumber, name);
-            case "NOODLES":
-                return new NoodlesProduct(serialNumber, name);
-            case "SNACKS":
-                return new SnacksProduct(serialNumber, name);
-            case "CANNED":
-                return new CannedGoodsProduct(serialNumber, name);
-            case "CONDIMENTS":
-                return new CondimentsProduct(serialNumber, name);
-            case "EGGS":
-                return new EggsProduct(serialNumber, name);
-            case "SOFTDRINK":
-                return new SoftDrinkProduct(serialNumber, name);
-            case "JUICE":
-                return new JuiceProduct(serialNumber, name);
-            case "ALCOHOL":
-                return new AlcoholProduct(serialNumber, name);
-            case "CLEANING":
-                return new CleaningAgentsProduct(serialNumber, name);
-            case "HOME":
-                return new HomeEssentialsProduct(serialNumber, name);
-            case "HAIRCARE":
-                return new HairCareProduct(serialNumber, name);
-            case "BODYCARE":
-                return new BodyCareProduct(serialNumber, name);
-            case "DENTAL":
-                return new DentalCareProduct(serialNumber, name);
-            case "CLOTHES":
-                return new ClothesProduct(serialNumber, name);
-            case "STATIONERY":
-                return new StationeryProduct(serialNumber, name);
-            case "PETFOOD":
-                return new PetFoodProduct(serialNumber, name);
-
-            // Special food products
-            case "FRUIT":
-                return new FruitProduct(serialNumber, name);
-            case "VEGETABLE":
-                return new VegetableProduct(serialNumber, name);
-            case "MILK":
-                return new MilkProduct(serialNumber, name);
-            case "FROZEN":
-                return new FrozenFoodProduct(serialNumber, name);
-            case "CHEESE":
-                return new CheeseProduct(serialNumber, name);
-            case "CHICKEN":
-                return new ChickenProduct(serialNumber, name);
-
-            default:
-                throw new IllegalArgumentException("Unknown product type: " + type);
-        }
-    }
-}
-
-// Main demonstration class
-public class SupermarketSystem {
+    
+    // Main method for demonstration
     public static void main(String[] args) {
-        // Create some sample products
-        Product beef = ProductFactory.createProduct("BEEF", "BEF0001", "Rib steak");
-        Product seafood = ProductFactory.createProduct("SEAFOOD", "SEA0001", "Tilapia");
-        Product bread = ProductFactory.createProduct("BREAD", "BRD0001", "Baguette");
-        Product fruit = ProductFactory.createProduct("FRUIT", "FRU0001", "Apples");
-        Product milk = ProductFactory.createProduct("MILK", "MLK0001", "Fresh milk");
-        Product frozen = ProductFactory.createProduct("FROZEN", "FRZ0001", "Chicken nuggets");
-        Product cheese = ProductFactory.createProduct("CHEESE", "CHS0001", "Mozzarella");
-        Product chicken = ProductFactory.createProduct("CHICKEN", "CHK0001", "Breast fillet");
-
-        // Display products
-        System.out.println("=== Supermarket Products ===\n");
-        System.out.println(beef);
-        System.out.println(seafood);
-        System.out.println(bread);
-        System.out.println(fruit);
-        System.out.println(milk);
-        System.out.println(frozen);
-        System.out.println(cheese);
-        System.out.println(chicken);
-
+        System.out.println("=== Supermarket Product Management System ===\n");
+        
+        // Create sample products from first table
+        Products beef = new Products("BEEF", "BEF0001", "Rib steak");
+        Products seafood = new Products("SEAFOOD", "SEA0001", "Tilapia");
+        Products bread = new Products("BREAD", "BRD0001", "Baguette");
+        Products cereal = new Products("CEREAL", "CER0001", "Oatmeal");
+        Products noodles = new Products("NOODLES", "NDL0001", "Instant ramen");
+        Products snacks = new Products("SNACKS", "SNK0001", "Cookies");
+        Products canned = new Products("CANNED", "CAN0001", "Canned tuna");
+        Products condiments = new Products("CONDIMENTS", "CON0001", "Salt");
+        Products eggs = new Products("EGGS", "EGG0001", "Free-range eggs");
+        Products softdrink = new Products("SOFTDRINK", "SFT0001", "Sparkling water");
+        Products juice = new Products("JUICE", "JUC0001", "Orange juice");
+        Products alcohol = new Products("ALCOHOL", "ALC0001", "Beer");
+        
+        // Create sample products from second table
+        Products fruit = new Products("FRUIT", "FRU0001", "Apples");
+        Products vegetable = new Products("VEGETABLE", "VEG0001", "Cabbage");
+        Products milk = new Products("MILK", "MLK0001", "Fresh milk");
+        Products frozen = new Products("FROZEN", "FRZ0001", "Chicken nuggets");
+        Products cheese = new Products("CHEESE", "CHS0001", "Mozzarella");
+        Products chicken = new Products("CHICKEN", "CHK0001", "Breast fillet");
+        
+        // Display all products
+        System.out.println("--- All Products ---\n");
+        beef.displayInfo();
+        seafood.displayInfo();
+        bread.displayInfo();
+        fruit.displayInfo();
+        vegetable.displayInfo();
+        milk.displayInfo();
+        frozen.displayInfo();
+        cheese.displayInfo();
+        chicken.displayInfo();
+        
         // Group by location
-        System.out.println("\n=== Products by Location ===");
-        Product[] products = { beef, seafood, bread, fruit, milk, frozen, cheese, chicken };
-
-        System.out.println("\nChilled Counter:");
-        for (Product p : products) {
+        Products[] allProducts = {beef, seafood, bread, cereal, noodles, snacks, 
+                                   canned, condiments, eggs, softdrink, juice, 
+                                   alcohol, fruit, vegetable, milk, frozen, 
+                                   cheese, chicken};
+        
+        System.out.println("\n=== Products by Location ===\n");
+        
+        System.out.println("CHILLED COUNTER:");
+        for (Products p : allProducts) {
             if (p.getDisplayLocation().equals("Chilled counter")) {
-                System.out.println("  - " + p.getName());
+                System.out.println("  - " + p.getName() + " (" + p.getSerialNumber() + ")");
             }
         }
-
-        System.out.println("\nRefrigerator:");
-        for (Product p : products) {
+        
+        System.out.println("\nREFRIGERATOR:");
+        for (Products p : allProducts) {
             if (p.getDisplayLocation().equals("Refrigerator")) {
-                System.out.println("  - " + p.getName());
+                System.out.println("  - " + p.getName() + " (" + p.getSerialNumber() + ")");
             }
         }
-
-        System.out.println("\nTable:");
-        for (Product p : products) {
+        
+        System.out.println("\nTABLE:");
+        for (Products p : allProducts) {
             if (p.getDisplayLocation().equals("Table")) {
-                System.out.println("  - " + p.getName());
+                System.out.println("  - " + p.getName() + " (" + p.getSerialNumber() + ")");
+            }
+        }
+        
+        System.out.println("\nSHELF:");
+        for (Products p : allProducts) {
+            if (p.getDisplayLocation().equals("Shelf")) {
+                System.out.println("  - " + p.getName() + " (" + p.getSerialNumber() + ")");
             }
         }
     }
