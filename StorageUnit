@@ -1,0 +1,29 @@
+import java.util.ArrayList;
+public class StorageUnit {
+    protected int capacity;
+    protected ArrayList<Product> product;
+
+    public StorageUnit(int capacity) {
+        this.capacity = capacity;
+        this.products = new ArrayList<>();
+    }
+    
+    public boolean addProduct(String product){
+        if(products.size() < capacity) {
+            products.add(product);
+            return true;
+        }
+        System.out.println("Storage full! Cannot add more products. Capacity :" + capacity);
+        return false;
+    }
+    
+    public boolean removeProduct(String product){
+        if(products.contains(product)) {
+            products.remove(product);
+            return true;
+        }
+        System.out.println("Product not found in storage.");
+        return false;
+    }
+
+}
