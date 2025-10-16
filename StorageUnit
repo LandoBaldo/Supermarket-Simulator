@@ -8,22 +8,31 @@ public class StorageUnit {
         this.products = new ArrayList<>();
     }
     
-    public boolean addProduct(String product){
+    public boolean addProduct(Product product){
         if(products.size() < capacity) {
             products.add(product);
+            System.out.println("Product " + product.getName() + " added to storage.");
             return true;
         }
         System.out.println("Storage full! Cannot add more products. Capacity :" + capacity);
         return false;
     }
     
-    public boolean removeProduct(String product){
+    public boolean removeProduct(Product product){
         if(products.contains(product)) {
             products.remove(product);
+            System.out.println("Product" + product.getName() + " from storage.");
             return true;
         }
         System.out.println("Product not found in storage.");
         return false;
     }
 
+    public ArrayList<Product> displayProducts() {
+        System.out.println("Products in storage:");
+        for (Product product : product) {
+            System.out.println(product);
+        }
+        return product;
+    }
 }
