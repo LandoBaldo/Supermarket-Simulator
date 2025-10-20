@@ -1,12 +1,10 @@
 import java.util.ArrayList;
-public class Basket extends Equipment{
-    private int capacity;
-    private ArrayList<Product> products;
 
+class Basket extends Equipment {
     public Basket(int capacity) {
-       super(capacity, new ArrayList<Product>());
-
+        super(capacity);
     }
+
     public Basket() {
         this(15);
     }
