@@ -1,13 +1,17 @@
 import java.util.ArrayList;
-public class Cart extends Equipment{
-    protected int capacity;
-    protected ArrayList<Product> products;
 
+class Cart extends Equipment {
     public Cart(int capacity) {
-       super(capacity, new ArrayList<Product>());
-
+        super(capacity);
     }
+
     public Cart() {
         this(30);
+    }
+
+    public void checkout() {
+        System.out.println("\n=== Checkout ===");
+        System.out.println("Total items: " + products.size());
+        displayProducts();
     }
 }
