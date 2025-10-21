@@ -5,13 +5,29 @@ public class Products {
     private String name;
     private String displayLocation;
     private String productType;
+    private double price;
+    
+    public enum ConsumableType {CONSUMABLE, NON_CONSUMABLE, BEVERAGE}
 
+    private ConsumableType consumbleType;
     // Constructor
     public Products(String productType, String serialNumber, String name) {
         this.productType = productType;
         this.serialNumber = serialNumber;
         this.name = name;
         this.displayLocation = determineLocation(productType);
+        this.consumbleType = determineConsumbleType(productType);
+        this.price = determineDefaultPrice(productType);
+    }
+
+    public Products(String productType, String serialNumber, String name, double price,
+        ConsumableType consumbaleType) {
+        this.productType = productType;
+        this.serialNumber = serialNumber;
+        this.name = name;
+        this.displayLocation = determineLocation(productType);
+        this.price = price;
+        this.consumbleType = consumbaleType;
     }
 
     // Determine location based on product type
@@ -115,6 +131,55 @@ public class Products {
                 return "CHK";
             default:
                 return "UNK";
+        }
+    }
+
+    private ConsumableType determineConsumbleType(String type) {
+        switch (type.toUpperCase()) {
+            case "SOFTDRINK":
+            case "JUICE":
+            case "ALCOHOL":
+                return ConsumableType.BEVERAGE;
+            case "BEEF":
+            case "SEAFOOD":
+            case "BREAD":
+            case "CEREAL":
+            case "NOODLES":
+            case "SNACKS":
+            case "CANNED":
+            case "CONDIMENTS":
+            case "EGGS":
+            case "FRUIT":
+            case "VEGETABLE":
+            case "MILK":
+            case "FROZEN":
+            case "CHEESE":
+            case "CHICKEN":
+                return ConsumableType.CONSUMABLE;
+            default:
+                return ConsumableType.NON_CONSUMABLE;
+        }
+    }
+
+    private double determineDefaultPrice(String type) {
+        switch (type.toUpperCase()) {
+            case "BEEF": return 350.0;
+            case "SEAFOOD": return 460.0;
+            case "BREAD": return 35.0;
+            case "CEREAL": return 150.0;
+            case "NOODLES": return 85.0;
+            case "SNACKS": return 15.5;
+            case "CANNED": return 35.5;
+            case "CONDIMENTS": return 49.0;
+            case "EGGS": return 120.0;
+            case "SOFTDRINK": return 50.0;
+            case "JUICE": return 20.0;
+            case "ALCOHOL": return 60.0;
+            case "MILK": return 50.5;
+            case "FROZEN": return 70.0;
+            case "CHEESE": return 60.0;
+            case "CHICKEN": return 250.0;
+            default: return 0.0;
         }
     }
 
