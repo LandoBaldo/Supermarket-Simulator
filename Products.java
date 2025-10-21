@@ -9,25 +9,26 @@ public class Products {
     
     public enum ConsumableType {CONSUMABLE, NON_CONSUMABLE, BEVERAGE}
 
-    private ConsumableType consumbleType;
+    private ConsumableType consumableType;
+
     // Constructor
     public Products(String productType, String serialNumber, String name) {
         this.productType = productType;
         this.serialNumber = serialNumber;
         this.name = name;
         this.displayLocation = determineLocation(productType);
-        this.consumbleType = determineConsumbleType(productType);
+        this.consumableType = determineConsumableType(productType);
         this.price = determineDefaultPrice(productType);
     }
 
     public Products(String productType, String serialNumber, String name, double price,
-        ConsumableType consumbaleType) {
+        ConsumableType consumableType) {
         this.productType = productType;
         this.serialNumber = serialNumber;
         this.name = name;
         this.displayLocation = determineLocation(productType);
         this.price = price;
-        this.consumbleType = consumbaleType;
+        this.consumableType = consumableType;
     }
 
     // Determine location based on product type
@@ -77,64 +78,37 @@ public class Products {
     // Get serial number prefix based on product type
     public String getSerialNumberPrefix() {
         switch (productType.toUpperCase()) {
-            case "BEEF":
-                return "BEF";
-            case "SEAFOOD":
-                return "SEA";
-            case "BREAD":
-                return "BRD";
-            case "CEREAL":
-                return "CER";
-            case "NOODLES":
-                return "NDL";
-            case "SNACKS":
-                return "SNK";
-            case "CANNED":
-                return "CAN";
-            case "CONDIMENTS":
-                return "CON";
-            case "EGGS":
-                return "EGG";
-            case "SOFTDRINK":
-                return "SFT";
-            case "JUICE":
-                return "JUC";
-            case "ALCOHOL":
-                return "ALC";
-            case "CLEANING":
-                return "CLE";
-            case "HOME":
-                return "HOM";
-            case "HAIRCARE":
-                return "HAR";
-            case "BODYCARE":
-                return "BOD";
-            case "DENTAL":
-                return "DEN";
-            case "CLOTHES":
-                return "CLO";
-            case "STATIONERY":
-                return "STN";
-            case "PETFOOD":
-                return "PET";
-            case "FRUIT":
-                return "FRU";
-            case "VEGETABLE":
-                return "VEG";
-            case "MILK":
-                return "MLK";
-            case "FROZEN":
-                return "FRZ";
-            case "CHEESE":
-                return "CHS";
-            case "CHICKEN":
-                return "CHK";
-            default:
-                return "UNK";
+            case "BEEF": return "BEF";
+            case "SEAFOOD": return "SEA";
+            case "BREAD": return "BRD";
+            case "CEREAL": return "CER";
+            case "NOODLES": return "NDL";
+            case "SNACKS": return "SNK";
+            case "CANNED": return "CAN";
+            case "CONDIMENTS": return "CON";
+            case "EGGS": return "EGG";
+            case "SOFTDRINK": return "SFT";
+            case "JUICE": return "JUC";
+            case "ALCOHOL": return "ALC";
+            case "CLEANING": return "CLE";
+            case "HOME": return "HOM";
+            case "HAIRCARE": return "HAR";
+            case "BODYCARE": return "BOD";
+            case "DENTAL": return "DEN";
+            case "CLOTHES": return "CLO";
+            case "STATIONERY": return "STN";
+            case "PETFOOD": return "PET";
+            case "FRUIT": return "FRU";
+            case "VEGETABLE": return "VEG";
+            case "MILK": return "MLK";
+            case "FROZEN": return "FRZ";
+            case "CHEESE": return "CHS";
+            case "CHICKEN": return "CHK";
+            default: return "UNK";
         }
     }
 
-    private ConsumableType determineConsumbleType(String type) {
+    private ConsumableType determineConsumableType(String type) {
         switch (type.toUpperCase()) {
             case "SOFTDRINK":
             case "JUICE":
@@ -184,34 +158,27 @@ public class Products {
     }
 
     // Getters
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDisplayLocation() {
-        return displayLocation;
-    }
-
-    public String getProductType() {
-        return productType;
-    }
+    public String getSerialNumber() { return serialNumber; }
+    public String getName() { return name; }
+    public String getDisplayLocation() { return displayLocation; }
+    public String getProductType() { return productType; }
+    public double getPrice() { return price; }
+    public ConsumableType getConsumableType() { return consumableType; }
+    public boolean isConsumable() { return consumableType == ConsumableType.CONSUMABLE || consumableType == ConsumableType.BEVERAGE; }
+    public boolean isBeverage() { return consumableType == ConsumableType.BEVERAGE; }
+    public boolean isNonConsumable() { return consumableType == ConsumableType.NON_CONSUMABLE; }
 
     // Setters
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
+    public void setName(String name) { this.name = name; }
+    public void setPrice(double price) { this.price = price; }
+    public void setConsumableType(ConsumableType consumableType) { this.consumableType = consumableType; }
 
     public void setProductType(String productType) {
         this.productType = productType;
         this.displayLocation = determineLocation(productType);
+        this.consumableType = determineConsumableType(productType);
+        this.price = determineDefaultPrice(productType);
     }
 
     // Display product information
@@ -220,14 +187,16 @@ public class Products {
         System.out.println("Name: " + name);
         System.out.println("Serial Number: " + serialNumber);
         System.out.println("Display Location: " + displayLocation);
+        System.out.println("Price: $" + price);
+        System.out.println("Consumable Type: " + consumableType);
         System.out.println("Serial Prefix: " + getSerialNumberPrefix());
         System.out.println("-------------------");
     }
 
     @Override
     public String toString() {
-        return String.format("%s - %s (SN: %s, Location: %s)",
-                productType, name, serialNumber, displayLocation);
+        return String.format("%s - %s (SN: %s, Location: %s, $%.2f)",
+                productType, name, serialNumber, displayLocation, price);
     }
 
     // Main method for demonstration
