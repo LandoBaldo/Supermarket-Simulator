@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 
-
 // Represents a shopper in the supermarket simulation
 public class Shopper {
     private String name;
@@ -8,23 +7,21 @@ public class Shopper {
     private Equipment equipment;
     private ArrayList<Products> handCarried;
     private boolean checkedOut = false;
-    private boolean exited= false;
+    private boolean exited = false;
 
-    //Construct
+    // Constructor
     public Shopper(String name, int age) {
         this.name = name;
         this.age = age;
         this.handCarried = new ArrayList<>();
     }
 
-    public 
-
-    public String getName() {return name;}
-    public int getAge() {return age;}
-    public Equipment getEquipment() {return equipment;}
-    public ArrayList<Products> getHandCarried() {return handCarried;}
-    public boolean hasCheckedOut() {return checkedOut;}
-
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public Equipment getEquipment() { return equipment; }
+    public ArrayList<Products> getHandCarried() { return handCarried; }
+    public boolean hasCheckedOut() { return checkedOut; }
+    public boolean hasExited() { return exited; }
 
     public boolean setEquipment(Equipment equipment) {
         if (this.equipment == null) {
@@ -33,8 +30,13 @@ public class Shopper {
         }
         return false;
     }
-    public void setCheckedOut(boolean status) {
+
+    public void setCheckedOut(boolean checkedOut) {
         this.checkedOut = checkedOut;
+    }
+
+    public void setExited(boolean exited) {
+        this.exited = exited;
     }
 
     public Equipment removeEquipment() {
@@ -43,17 +45,18 @@ public class Shopper {
         return temp;
     }
 
-    public boolean AddToHandCarried(Products product) {
-        if(handCarried.size() >= 2) return false;
+    public boolean addToHandCarried(Products product) {
+        if (handCarried.size() >= 2) return false;
         handCarried.add(product);
         return true;
     }
 
-    public boolean RemoveFromHandCarried(Products product) {
+    public boolean removeFromHandCarried(Products product) {
         return handCarried.remove(product);
     }
    
     public Products removeFromHandCarriedByIndex(int index) {
+        if (index < 0 || index >= handCarried.size()) return null;
         return handCarried.remove(index);
     }
     
@@ -61,16 +64,16 @@ public class Shopper {
         if (this.equipment != null && equipment.addProduct(product)) {
             return true;
         } else if (handCarried.size() < 2) {
-            return AddToHandCarried(product);
+            return addToHandCarried(product);
         }
         return false;
     } 
 
     public boolean removeProduct(Products product) {
-        if(equipment != null && equipment.removeProduct(product)) {
+        if (equipment != null && equipment.removeProduct(product)) {
             return true;
         }
-        return RemoveFromHandCarried(product);
+        return removeFromHandCarried(product);
     }
 
     public ArrayList<Products> getAllProducts() {
@@ -99,15 +102,26 @@ public class Shopper {
         return true;
     }
 
-    public double applyDiscount(double totalAmount) {
+    public double applyDiscount(Products product) {
         double originalPrice = product.getPrice();
-        if(product.isConsumble() && !product.getProductType().equals("ALCOHOL")){
-            if(product.isBeverage()) {
-                return originalPrice * 0.9;
+        if (age >= 60 && product.isConsumable() && !product.getProductType().equals("ALCOHOL")) {
+            if (product.isBeverage()) {
+                return originalPrice * 0.90;
             } else {
                 return originalPrice * 0.80;
             }
         }
+        return originalPrice;
     }
 
+    public void clearAllProducts() {
+        if (equipment != null) {
+            equipment.getProducts().clear();
+        }
+        handCarried.clear();
+    }
+
+    public boolean isEquipmentEmpty() {
+        return equipment == null || equipment.isEmpty();
+    }
 }
