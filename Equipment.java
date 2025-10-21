@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-class Equipment {
+public class Equipment {
     protected int capacity;
     protected ArrayList<Products> products;
 
@@ -35,7 +35,18 @@ class Equipment {
     }
 
     public double calculateTotalValue() {
-        // Placeholder - you can add price field to Products later
-        return products.size() * 10.0;
+        double total = 0;
+        for (Products product : products) {
+            total += product.getPrice();
+        }
+        return total;
+    }
+
+    public boolean removeProduct(Products product) {
+        return products.remove(product);
+    }
+
+    public boolean isEmpty() {
+        return products.isEmpty();
     }
 }
