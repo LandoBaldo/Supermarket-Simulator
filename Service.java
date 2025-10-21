@@ -121,13 +121,13 @@ public class Service {
         
         // Create receipt using the Receipt class
         Receipt receipt = new Receipt(shopper);
-        receipt.saveToFile();
+        String receiptContent = receipt.generateReceipt();
         
         // Clear products and equipment
         shopper.clearAllProducts();
         shopper.setCheckedOut(true);
         
-        return "Checkout completed successfully! Receipt has been saved.";
+        return "Checkout completed successfully!\n" + receiptContent;
     }
 
     private String handleExit(Shopper shopper) {
