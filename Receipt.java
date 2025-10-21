@@ -60,16 +60,16 @@ public class Receipt {
             Products product = group.product;
             int quantity = group.quantity;
             double originalPrice = product.getPrice() * quantity;
-            double discountedPrice = product.getPrice() * quantity; // Will apply discount per item
+            double discountedPrice = shopperAge >= 60 ? shopper.applyDiscount(product) * quantity : originalPrice;
+            double itemDiscount = originalPrice - discountedPrice;
             
             receipt = receipt + product.getName() + " x" + quantity + "\n";
             receipt = receipt + String.format("  Price: $%.2f x %d = $%.2f\n", 
                 product.getPrice(), quantity, originalPrice);
             
-            // Apply discount per item to show individual discounts
-            for (int i = 0; i < quantity; i++) {
-                double itemDiscountedPrice = product.getPrice();
-                // In a real implementation, you'd apply the shopper's discount logic here
+            if (itemDiscount > 0) {
+                receipt = receipt + String.format("  Discount: -$%.2f\n", itemDiscount);
+                receipt = receipt + String.format("  Final: $%.2f\n", discountedPrice);
             }
             
             receipt = receipt + "  SN: " + product.getSerialNumber() + "\n\n";
@@ -126,7 +126,6 @@ public class Receipt {
             this.quantity = quantity;
         }
     }
-
 
     /**
      * Displays receipt to console
