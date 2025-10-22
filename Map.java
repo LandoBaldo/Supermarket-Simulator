@@ -10,7 +10,7 @@ public class Map {
 
     // StorageUnits
     private ArrayList<Table> tables;
-    private ArrayList<ChilledCounters> ChilledCounters;
+    private ArrayList<ChilledCounter> ChilledCounters;
     private ArrayList<Shelf> Shelf;
     private ArrayList<Refrigerator> Refrigerators;
     private ArrayList<Service> Service;
@@ -26,7 +26,7 @@ public class Map {
         this.map = new String[height][width];
 
         this.tables = new ArrayList<>();
-        this.ChilledCounters = new ArrayList<>();
+        this.ChilledCounter = new ArrayList<>();
         this.Shelf = new ArrayList<>();
         this.Refrigerators = new ArrayList<>();
         this.Service = new ArrayList<>();
@@ -57,7 +57,7 @@ public class Map {
         }
     }
 
-    // Even simpler furniture methods
+    // Simple furniture placement methods
     public void addTable(Table table, int x, int y) {
         if (isValidPosition(x, y) && map[y][x].equals(" ")) {
             tables.add(table);
@@ -65,9 +65,9 @@ public class Map {
         }
     }
 
-    public void addChilledCounter(ChilledCounters cc, int x, int y) {
+    public void addChilledCounter(ChilledCounter cc, int x, int y) {
         if (isValidPosition(x, y) && map[y][x].equals(" ")) {
-            ChilledCounters.add(cc);
+            ChilledCounter.add(cc);
             map[y][x] = "C";
         }
     }
@@ -85,10 +85,33 @@ public class Map {
             map[y][x] = "H";
         }
     }
-
+    // public helpers for MovementController / Shopper
     private boolean isValidPosition(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
+    /*
+     * Get cell value at (x, y). Returns null if out of bounds.
+     */
+    public String getCell(int x, int y) {
+        if (!isValidPosition(x, y)) {
+            return null;
+        }
+        return map[y][x];
+    }
+    public void setCell(int x, int y, String value) {
+        if (isValidPosition(x, y)) return; 
+            map[y][x] = value;
+    }
+
+    //Walkability Rule
+    public boolean isWalkable(int x, int y) {
+        if(!isValidPosition(x,y)) return false;
+        String cell = map[y][x];
+        return " ".equals(cell);
+    }
+
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
 
     public void printMap() {
         System.out.print("   ");
@@ -107,13 +130,11 @@ public class Map {
     }
 
     public void printStats() {
-        System.out.println("\n=== RESTAURANT LAYOUT ===");
+        System.out.println("\n=== SUPERMARKET LAYOUT ===");
         System.out.println("Tables: " + tables.size());
         System.out.println("Chilled Counters: " + ChilledCounters.size());
         System.out.println("Refrigerators: " + Refrigerators.size());
         System.out.println("Shelves: " + Shelf.size());
     }
-
-
 
 }
