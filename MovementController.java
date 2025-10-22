@@ -14,7 +14,7 @@ public class MovementController {
         if(map.isValidPosition(currentx, currenty) && "S".equals(map.getCell(currentx,currenty))) {
             map.setCell(currentx,currenty, " ");
         }
-        shooper.setPostion(nx, ny);
+        shopper.setPostion(nx, ny);
         map.setCell(nx, ny, "S");
         return true;
     }
