@@ -9,6 +9,10 @@ public class Shopper {
     private boolean checkedOut = false;
     private boolean exited = false;
 
+    public enum Direction {UP,DOWN,LEFT,RIGHT}
+    private int x = -1;
+    private int y = -1;
+    private Direction facing = Direction.DOWN;
     // Constructor
     public Shopper(String name, int age) {
         this.name = name;
@@ -16,12 +20,20 @@ public class Shopper {
         this.handCarried = new ArrayList<>();
     }
 
+    // Getters and Setters
     public String getName() { return name; }
     public int getAge() { return age; }
     public Equipment getEquipment() { return equipment; }
     public ArrayList<Products> getHandCarried() { return handCarried; }
     public boolean hasCheckedOut() { return checkedOut; }
     public boolean hasExited() { return exited; }
+
+    // Position and Direction
+    public void setPostion(int x, int y) {this.x = x; this.y = y;}
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public void setFacing(Direction d) { this.facing = d; }
+    public Direction getFacing() { return facing; }
 
     public boolean setEquipment(Equipment equipment) {
         if (this.equipment == null) {
