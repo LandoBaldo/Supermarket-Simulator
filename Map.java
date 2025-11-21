@@ -1,3 +1,5 @@
+import Base.Product;
+import Base.Equipment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +12,7 @@ public class Map {
 
     // StorageUnits
     private ArrayList<Table> tables;
-    private ArrayList<ChilledCounters> ChilledCounters;
+    private ArrayList<ChilledCounter> ChilledCounters;
     private ArrayList<Shelf> Shelf;
     private ArrayList<Refrigerator> Refrigerators;
     private ArrayList<Service> Service;
@@ -65,7 +67,7 @@ public class Map {
         }
     }
 
-    public void addChilledCounter(ChilledCounters cc, int x, int y) {
+    public void addChilledCounter(ChilledCounter cc, int x, int y) {
         if (isValidPosition(x, y) && map[y][x].equals(" ")) {
             ChilledCounters.add(cc);
             map[y][x] = "C";
