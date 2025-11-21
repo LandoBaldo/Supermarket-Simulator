@@ -1,14 +1,15 @@
 import java.util.ArrayList;
+import Base.Product;
+import Base.StorageUnit;
+class ChilledCounter extends StorageUnit {
+    protected double temperature;
 
-class ChilledCounters extends StorageUnit {
-    private double temperature;
-
-    public ChilledCounters(int capacity) {
+    public ChilledCounter(int capacity) {
         super(capacity);
-        this.temperature = 2.0; // Default chilled counter temp
+        this.temperature = 4.0;
     }
 
-    public ChilledCounters() {
+    public ChilledCounter() {
         this(3);
     }
 
@@ -16,12 +17,11 @@ class ChilledCounters extends StorageUnit {
         this.temperature = temperature;
         System.out.println("Temperature set to: " + temperature + "°C");
     }
-
     public double getTemperature() {
-        return temperature;
+    return temperature;
     }
 
-    public boolean addProductWithCheck(Products product) {
+    public boolean addProductWithCheck(Product product) {
         // Check if product should be in chilled counter
         if (!product.getDisplayLocation().equals("Chilled counter")) {
             System.out.println("Warning: " + product.getName() +
