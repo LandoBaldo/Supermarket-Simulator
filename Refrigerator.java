@@ -1,5 +1,6 @@
 import java.util.ArrayList;
-
+import Base.Product;
+import Base.StorageUnit;
 class Refrigerator extends StorageUnit {
     private double temperature;
 
@@ -21,7 +22,7 @@ class Refrigerator extends StorageUnit {
         return temperature;
     }
 
-    public boolean addProductWithCheck(Products product) {
+    public boolean addProductWithCheck(Product product) {
         // Check if product should be in refrigerator
         if (!product.getDisplayLocation().equals("Refrigerator")) {
             System.out.println("Warning: " + product.getName() +
