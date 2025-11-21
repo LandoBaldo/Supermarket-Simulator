@@ -1,3 +1,5 @@
+import Base.Equipment;
+import Base.Product;
 import java.util.ArrayList;
 
 // Represents a shopper in the supermarket simulation
@@ -5,7 +7,7 @@ public class Shopper {
     private String name;
     private int age;
     private Equipment equipment;
-    private ArrayList<Products> handCarried;
+    private ArrayList<Product> handCarried;
     private boolean checkedOut = false;
     private boolean exited = false;
 
@@ -37,7 +39,7 @@ public class Shopper {
         return equipment;
     }
 
-    public ArrayList<Products> getHandCarried() {
+    public ArrayList<Product> getHandCarried() {
         return handCarried;
     }
 
@@ -93,24 +95,24 @@ public class Shopper {
         return temp;
     }
 
-    public boolean addToHandCarried(Products product) {
+    public boolean addToHandCarried(Product product) {
         if (handCarried.size() >= 2)
             return false;
         handCarried.add(product);
         return true;
     }
 
-    public boolean removeFromHandCarried(Products product) {
+    public boolean removeFromHandCarried(Product product) {
         return handCarried.remove(product);
     }
 
-    public Products removeFromHandCarriedByIndex(int index) {
+    public Product removeFromHandCarriedByIndex(int index) {
         if (index < 0 || index >= handCarried.size())
             return null;
         return handCarried.remove(index);
     }
 
-    public boolean addProduct(Products product) {
+    public boolean addProduct(Product product) {
         if (this.equipment != null && equipment.addProduct(product)) {
             return true;
         } else if (handCarried.size() < 2) {
@@ -119,15 +121,15 @@ public class Shopper {
         return false;
     }
 
-    public boolean removeProduct(Products product) {
+    public boolean removeProduct(Product product) {
         if (equipment != null && equipment.removeProduct(product)) {
             return true;
         }
         return removeFromHandCarried(product);
     }
 
-    public ArrayList<Products> getAllProducts() {
-        ArrayList<Products> allProducts = new ArrayList<>(handCarried);
+    public ArrayList<Product> getAllProducts() {
+        ArrayList<Product> allProducts = new ArrayList<>(handCarried);
         if (equipment != null) {
             allProducts.addAll(equipment.getProducts());
         }
@@ -142,7 +144,7 @@ public class Shopper {
         return count;
     }
 
-    public boolean canPurchase(Products product) {
+    public boolean canPurchase(Product product) {
         if (age < 18) {
             String productType = product.getProductType();
             if (productType.equals("ALCOHOL") || productType.equals("CLEANING")) {
@@ -152,7 +154,7 @@ public class Shopper {
         return true;
     }
 
-    public double applyDiscount(Products product) {
+    public double applyDiscount(Product product) {
         double originalPrice = product.getPrice();
         if (age >= 60 && product.isConsumable() && !product.getProductType().equals("ALCOHOL")) {
             if (product.isBeverage()) {
