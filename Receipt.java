@@ -1,3 +1,4 @@
+import Base.Product;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
@@ -8,17 +9,17 @@ public class Receipt {
     private String shopperName;
     private int shopperAge;
     private LocalDateTime dateTime;
-    private ArrayList<Products> products;
+    private ArrayList<Product> Product;
     private double subtotal;
     private double totalDiscount;
     private double finalTotal;
-    private ArrayList<ProductWithDiscount> productsWithDiscounts;
+    private ArrayList<ProductWithDiscount> ProductWithDiscounts;
 
     public Receipt(Shopper shopper) {
         this.shopperName = shopper.getName();
         this.shopperAge = shopper.getAge();
         this.dateTime = LocalDateTime.now();
-        this.products = shopper.getAllProducts();
+        this.Product = shopper.getAllProducts();
         calculateTotals(shopper);
     }
 
@@ -29,9 +30,9 @@ public class Receipt {
         subtotal = 0;
         totalDiscount = 0;
         finalTotal = 0;
-        productsWithDiscounts = new ArrayList<>();
+        ProductWithDiscounts = new ArrayList<>();
 
-        for (Products product : products) {
+        for (Product product : Product) {
             double originalPrice = product.getPrice();
             double discountedPrice = shopper.applyDiscount(product);
             double itemDiscount = originalPrice - discountedPrice;
@@ -41,7 +42,7 @@ public class Receipt {
             finalTotal = finalTotal + discountedPrice;
 
             // Store product with its calculated discount
-            productsWithDiscounts.add(new ProductWithDiscount(product, discountedPrice));
+            ProductWithDiscounts.add(new ProductWithDiscount(product, discountedPrice));
         }
     }
 
@@ -58,11 +59,11 @@ public class Receipt {
         receipt = receipt + "ITEMS PURCHASED:\n";
         receipt = receipt + "----------------------------------------\n";
 
-        // Group products by type for better display
-        ArrayList<ProductGroup> productGroups = groupProducts();
+        // Group Product by type for better display
+        ArrayList<ProductGroup> productGroups = groupProduct();
 
         for (ProductGroup group : productGroups) {
-            Products product = group.product;
+            Product product = group.product;
             int quantity = group.quantity;
             double originalPrice = product.getPrice() * quantity;
             double discountedPrice = group.discountedPricePerUnit * quantity;
@@ -97,12 +98,12 @@ public class Receipt {
     }
 
     /**
-     * Groups identical products together
+     * Groups identical Product together
      */
-    private ArrayList<ProductGroup> groupProducts() {
+    private ArrayList<ProductGroup> groupProduct() {
         ArrayList<ProductGroup> groups = new ArrayList<>();
 
-        for (ProductWithDiscount pwd : productsWithDiscounts) {
+        for (ProductWithDiscount pwd : ProductWithDiscounts) {
             boolean found = false;
             for (ProductGroup group : groups) {
                 if (group.product.getSerialNumber().equals(pwd.product.getSerialNumber())) {
@@ -123,24 +124,24 @@ public class Receipt {
      * Helper class to store product with its discounted price
      */
     private class ProductWithDiscount {
-        Products product;
+        Product product;
         double discountedPrice;
 
-        ProductWithDiscount(Products product, double discountedPrice) {
+        ProductWithDiscount(Product product, double discountedPrice) {
             this.product = product;
             this.discountedPrice = discountedPrice;
         }
     }
 
     /**
-     * Helper class to group products
+     * Helper class to group Product
      */
     private class ProductGroup {
-        Products product;
+        Product product;
         int quantity;
         double discountedPricePerUnit;
 
-        ProductGroup(Products product, int quantity, double discountedPricePerUnit) {
+        ProductGroup(Product product, int quantity, double discountedPricePerUnit) {
             this.product = product;
             this.quantity = quantity;
             this.discountedPricePerUnit = discountedPricePerUnit;
@@ -180,6 +181,6 @@ public class Receipt {
     }
 
     public int getItemCount() {
-        return products.size();
+        return Product.size();
     }
 }
