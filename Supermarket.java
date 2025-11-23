@@ -1,3 +1,6 @@
+import Base.Product;
+import Base.StorageUnit;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -13,7 +16,7 @@ public class Supermarket {
 
     // Storage units organized by type
     private ArrayList<Table> tables;
-    private ArrayList<ChilledCounters> chilledCounters;
+    private ArrayList<ChilledCounter> chilledCounters;
     private ArrayList<Shelf> shelves;
     private ArrayList<Refrigerator> refrigerators;
 
@@ -61,7 +64,7 @@ public class Supermarket {
      * Add a chilled counter to the supermarket
      */
     public boolean addChilledCounter(int x, int y, int capacity) {
-        ChilledCounters cc = new ChilledCounters(capacity);
+        ChilledCounter cc = new ChilledCounter(capacity);
         map.addChilledCounter(cc, x, y);
         chilledCounters.add(cc);
         storageLocations.put(x + "," + y, cc);
@@ -172,7 +175,7 @@ public class Supermarket {
     /**
      * Add a product to a storage unit at specific location
      */
-    public boolean addProductToLocation(Products product, int x, int y) {
+    public boolean addProductToLocation(Product product, int x, int y) {
         String key = x + "," + y;
         StorageUnit storage = storageLocations.get(key);
 
@@ -206,7 +209,7 @@ public class Supermarket {
             String storageType, ArrayList<String> locations, String productName) {
         for (int i = 0; i < storageList.size(); i++) {
             StorageUnit storage = storageList.get(i);
-            for (Products product : storage.getProducts()) {
+            for (Product product : storage.getProducts()) {
                 if (product.getName().toLowerCase().contains(productName.toLowerCase())) {
                     locations.add(storageType + " #" + (i + 1));
                 }
@@ -254,14 +257,14 @@ public class Supermarket {
 
         System.out.println("\n=== Storage Unit ===");
         System.out.println("Products available:");
-        ArrayList<Products> products = storage.getProducts();
+        ArrayList<Product> products = storage.getProducts();
 
         if (products.isEmpty()) {
             return "This storage unit is empty.";
         }
 
         for (int i = 0; i < products.size(); i++) {
-            Products p = products.get(i);
+            Product p = products.get(i);
             System.out.println((i + 1) + ". " + p.getName() + " - $" + p.getPrice());
         }
 
@@ -270,7 +273,7 @@ public class Supermarket {
         scanner.nextLine(); // consume newline
 
         if (choice > 0 && choice <= products.size()) {
-            Products selectedProduct = products.get(choice - 1);
+            Product selectedProduct = products.get(choice - 1);
 
             // Check if shopper can purchase this product
             if (!shopper.canPurchase(selectedProduct)) {
@@ -448,12 +451,12 @@ public class Supermarket {
         System.out.println("\nHand Carried: " + shopper.getHandCarried().size() + "/2");
 
         System.out.println("\nAll Products:");
-        ArrayList<Products> allProducts = shopper.getAllProducts();
+        ArrayList<Product> allProducts = shopper.getAllProducts();
         if (allProducts.isEmpty()) {
             System.out.println("  (empty)");
         } else {
             double total = 0;
-            for (Products p : allProducts) {
+            for (Product p : allProducts) {
                 double price = shopper.applyDiscount(p);
                 System.out.println("  - " + p.getName() + " ($" + price + ")");
                 total += price;
@@ -485,7 +488,7 @@ public class Supermarket {
         return tables;
     }
 
-    public ArrayList<ChilledCounters> getChilledCounters() {
+    public ArrayList<ChilledCounter> getChilledCounters() {
         return chilledCounters;
     }
 

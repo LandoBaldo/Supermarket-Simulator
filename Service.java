@@ -1,3 +1,5 @@
+import Base.Product;
+import Base.Equipment;
 import java.util.ArrayList;
 import java.util.Scanner;
 

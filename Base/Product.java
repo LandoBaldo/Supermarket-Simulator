@@ -1,27 +1,33 @@
+package Base;
 import java.util.*;
 
-public class Products {
-    private String serialNumber;
-    private String name;
-    private String displayLocation;
-    private String productType;
-    private double price;
+public abstract class Product {
+    protected String serialNumber;
+    protected String name;
+    protected String displayLocation;
+    protected String productType;
+    protected double price;
     
     public enum ConsumableType {CONSUMABLE, NON_CONSUMABLE, BEVERAGE}
 
-    private ConsumableType consumableType;
+    protected ConsumableType consumableType;
 
-    // Constructor
-    public Products(String productType, String serialNumber, String name) {
+    /**
+     * Protected constructor for subclasses.
+     * Subclasses should call this with their specific product type.
+     */
+    protected Product(String productType, String serialNumber, String name) {
         this.productType = productType;
         this.serialNumber = serialNumber;
         this.name = name;
         this.displayLocation = determineLocation(productType);
-        this.consumableType = determineConsumableType(productType);
         this.price = determineDefaultPrice(productType);
     }
 
-    public Products(String productType, String serialNumber, String name, double price,
+    /**
+     * Protected constructor with explicit price and consumable type.
+     */
+    protected Product(String productType, String serialNumber, String name, double price,
         ConsumableType consumableType) {
         this.productType = productType;
         this.serialNumber = serialNumber;
@@ -31,8 +37,10 @@ public class Products {
         this.consumableType = consumableType;
     }
 
-    // Determine location based on product type
-    private String determineLocation(String type) {
+    // Determine location based on product type (protected so subclasses can override)
+    protected String determineLocation(String type) {
+        if (type == null) return "Shelf";
+        
         switch (type.toUpperCase()) {
             // Chilled counter products
             case "BEEF":
@@ -77,6 +85,8 @@ public class Products {
 
     // Get serial number prefix based on product type
     public String getSerialNumberPrefix() {
+        if (productType == null) return "UNK";
+        
         switch (productType.toUpperCase()) {
             case "BEEF": return "BEF";
             case "SEAFOOD": return "SEA";
@@ -108,34 +118,10 @@ public class Products {
         }
     }
 
-    private ConsumableType determineConsumableType(String type) {
-        switch (type.toUpperCase()) {
-            case "SOFTDRINK":
-            case "JUICE":
-            case "ALCOHOL":
-                return ConsumableType.BEVERAGE;
-            case "BEEF":
-            case "SEAFOOD":
-            case "BREAD":
-            case "CEREAL":
-            case "NOODLES":
-            case "SNACKS":
-            case "CANNED":
-            case "CONDIMENTS":
-            case "EGGS":
-            case "FRUIT":
-            case "VEGETABLE":
-            case "MILK":
-            case "FROZEN":
-            case "CHEESE":
-            case "CHICKEN":
-                return ConsumableType.CONSUMABLE;
-            default:
-                return ConsumableType.NON_CONSUMABLE;
-        }
-    }
-
-    private double determineDefaultPrice(String type) {
+    // Default price lookup (protected so subclasses can override)
+    protected double determineDefaultPrice(String type) {
+        if (type == null) return 0.0;
+        
         switch (type.toUpperCase()) {
             case "BEEF": return 350.0;
             case "SEAFOOD": return 460.0;
@@ -153,6 +139,16 @@ public class Products {
             case "FROZEN": return 70.0;
             case "CHEESE": return 60.0;
             case "CHICKEN": return 250.0;
+            case "FRUIT": return 90.0;
+            case "VEGETABLE": return 40.0;
+            case "CLEANING": return 75.0;
+            case "HOME": return 100.0;
+            case "HAIRCARE": return 85.0;
+            case "BODYCARE": return 65.0;
+            case "DENTAL": return 55.0;
+            case "CLOTHES": return 250.0;
+            case "STATIONERY": return 30.0;
+            case "PETFOOD": return 120.0;
             default: return 0.0;
         }
     }
@@ -164,7 +160,10 @@ public class Products {
     public String getProductType() { return productType; }
     public double getPrice() { return price; }
     public ConsumableType getConsumableType() { return consumableType; }
-    public boolean isConsumable() { return consumableType == ConsumableType.CONSUMABLE || consumableType == ConsumableType.BEVERAGE; }
+    public boolean isConsumable() { 
+        return consumableType == ConsumableType.CONSUMABLE || 
+               consumableType == ConsumableType.BEVERAGE; 
+    }
     public boolean isBeverage() { return consumableType == ConsumableType.BEVERAGE; }
     public boolean isNonConsumable() { return consumableType == ConsumableType.NON_CONSUMABLE; }
 
@@ -172,12 +171,13 @@ public class Products {
     public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
     public void setName(String name) { this.name = name; }
     public void setPrice(double price) { this.price = price; }
-    public void setConsumableType(ConsumableType consumableType) { this.consumableType = consumableType; }
+    public void setConsumableType(ConsumableType consumableType) { 
+        this.consumableType = consumableType; 
+    }
 
     public void setProductType(String productType) {
         this.productType = productType;
         this.displayLocation = determineLocation(productType);
-        this.consumableType = determineConsumableType(productType);
         this.price = determineDefaultPrice(productType);
     }
 
@@ -197,80 +197,5 @@ public class Products {
     public String toString() {
         return String.format("%s - %s (SN: %s, Location: %s, $%.2f)",
                 productType, name, serialNumber, displayLocation, price);
-    }
-
-    // Main method for demonstration
-    public static void main(String[] args) {
-        System.out.println("=== Supermarket Product Management System ===\n");
-
-        // Create sample products from first table
-        Products beef = new Products("BEEF", "BEF0001", "Rib steak");
-        Products seafood = new Products("SEAFOOD", "SEA0001", "Tilapia");
-        Products bread = new Products("BREAD", "BRD0001", "Baguette");
-        Products cereal = new Products("CEREAL", "CER0001", "Oatmeal");
-        Products noodles = new Products("NOODLES", "NDL0001", "Instant ramen");
-        Products snacks = new Products("SNACKS", "SNK0001", "Cookies");
-        Products canned = new Products("CANNED", "CAN0001", "Canned tuna");
-        Products condiments = new Products("CONDIMENTS", "CON0001", "Salt");
-        Products eggs = new Products("EGGS", "EGG0001", "Free-range eggs");
-        Products softdrink = new Products("SOFTDRINK", "SFT0001", "Sparkling water");
-        Products juice = new Products("JUICE", "JUC0001", "Orange juice");
-        Products alcohol = new Products("ALCOHOL", "ALC0001", "Beer");
-
-        // Create sample products from second table
-        Products fruit = new Products("FRUIT", "FRU0001", "Apples");
-        Products vegetable = new Products("VEGETABLE", "VEG0001", "Cabbage");
-        Products milk = new Products("MILK", "MLK0001", "Fresh milk");
-        Products frozen = new Products("FROZEN", "FRZ0001", "Chicken nuggets");
-        Products cheese = new Products("CHEESE", "CHS0001", "Mozzarella");
-        Products chicken = new Products("CHICKEN", "CHK0001", "Breast fillet");
-
-        // Display all products
-        System.out.println("--- All Products ---\n");
-        beef.displayInfo();
-        seafood.displayInfo();
-        bread.displayInfo();
-        fruit.displayInfo();
-        vegetable.displayInfo();
-        milk.displayInfo();
-        frozen.displayInfo();
-        cheese.displayInfo();
-        chicken.displayInfo();
-
-        // Group by location
-        Products[] allProducts = { beef, seafood, bread, cereal, noodles, snacks,
-                canned, condiments, eggs, softdrink, juice,
-                alcohol, fruit, vegetable, milk, frozen,
-                cheese, chicken };
-
-        System.out.println("\n=== Products by Location ===\n");
-
-        System.out.println("CHILLED COUNTER:");
-        for (Products p : allProducts) {
-            if (p.getDisplayLocation().equals("Chilled counter")) {
-                System.out.println("  - " + p.getName() + " (" + p.getSerialNumber() + ")");
-            }
-        }
-
-        System.out.println("\nREFRIGERATOR:");
-        for (Products p : allProducts) {
-            if (p.getDisplayLocation().equals("Refrigerator")) {
-                System.out.println("  - " + p.getName() + " (" + p.getSerialNumber() + ")");
-            }
-        }
-
-        System.out.println("\nTABLE:");
-        for (Products p : allProducts) {
-            if (p.getDisplayLocation().equals("Table")) {
-                System.out.println("  - " + p.getName() + " (" + p.getSerialNumber() + ")");
-            }
-        }
-
-        System.out.println("\nSHELF:");
-        for (Products p : allProducts) {
-            if (p.getDisplayLocation().equals("Shelf")) {
-                System.out.println("  - " + p.getName() + " (" + p.getSerialNumber() + ")");
-            }
-        }
     }
 }

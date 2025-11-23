@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 
+import Base.Equipment;
+
 class Cart extends Equipment {
     public Cart(int capacity) {
         super(capacity);
     }
-
     public Cart() {
         this(30);
     }
