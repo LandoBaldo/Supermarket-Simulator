@@ -1,11 +1,16 @@
-import java.util.ArrayList;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Base;
 
-class Basket extends Equipment {
-    public Basket(int capacity) {
-        super(capacity);
-    }
+/**
+ *
+ * @author Gabriel
+ */
 
+public class Basket extends Equipment {
     public Basket() {
-        this(15);
+        super(15); // Basket holds 15 items
     }
 }

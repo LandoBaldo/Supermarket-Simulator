@@ -8,15 +8,14 @@ package Base;
  *
  * @author Gabriel
  */
-public class Refrigerator extends StorageUnit {
-    public Refrigerator() {
-        super(3, 3); // 3 Tiers, 3 Capacity
+public class ChilledCounter extends StorageUnit {
+    public ChilledCounter() {
+        super(1, 3); // 1 Tier, 3 Capacity
     }
     
-    // Validation check for products
     @Override
     public boolean addProduct(Product p) {
-        if (!p.getDisplayLocation().equalsIgnoreCase("Refrigerator")) {
+        if (!p.getDisplayLocation().equalsIgnoreCase("Chilled counter")) {
             System.out.println("Warning: " + p.getName() + " belongs in " + p.getDisplayLocation());
         }
         return super.addProduct(p);

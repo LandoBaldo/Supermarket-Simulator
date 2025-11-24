@@ -1,17 +1,16 @@
-import java.util.ArrayList;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Base;
 
-class Cart extends Equipment {
-    public Cart(int capacity) {
-        super(capacity);
-    }
+/**
+ *
+ * @author Gabriel
+ */
 
+public class Cart extends Equipment {
     public Cart() {
-        this(30);
-    }
-
-    public void checkout() {
-        System.out.println("\n=== Checkout ===");
-        System.out.println("Total items: " + products.size());
-        displayProducts();
+        super(30); // Cart holds 30 items
     }
 }

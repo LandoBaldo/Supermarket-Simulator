@@ -1,177 +1,150 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Base;
+
+/**
+ *
+ * @author Gabriel
+ */
 import java.util.ArrayList;
 
-// Represents a shopper in the supermarket simulation
 public class Shopper {
     private String name;
     private int age;
+    
+    // Position
+    private int x;
+    private int y;
+    
+    // Direction Enum (Used for Vision)
+    public enum Direction { NORTH, SOUTH, WEST, EAST }
+    private Direction facingDirection;
+
+    // Inventory
     private Equipment equipment;
-    private ArrayList<Products> handCarried;
+    private ArrayList<Product> handCarried;
+    
+    // Status Flags
     private boolean checkedOut = false;
     private boolean exited = false;
 
-    public enum Direction {
-        UP, DOWN, LEFT, RIGHT
-    }
-
-    private int x = -1;
-    private int y = -1;
-    private Direction facing = Direction.DOWN;
-
-    // Constructor
     public Shopper(String name, int age) {
         this.name = name;
         this.age = age;
         this.handCarried = new ArrayList<>();
+        this.facingDirection = Direction.NORTH; // Default facing
     }
 
-    // Getters and Setters
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public Equipment getEquipment() {
-        return equipment;
-    }
-
-    public ArrayList<Products> getHandCarried() {
-        return handCarried;
-    }
-
-    public boolean hasCheckedOut() {
-        return checkedOut;
-    }
-
-    public boolean hasExited() {
-        return exited;
-    }
-
-    // Position and Direction
-    public void setPostion(int x, int y) {
+    // --- Movement & Vision ---
+    public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
-
-    public int getX() {
-        return x;
+    // Helper setters for MovementController
+    public void setX(int x) { 
+        this.x = x; 
+    }
+    public void setY(int y) {
+        this.y = y; 
+    }
+    
+    public int getX() { 
+        return x; 
+    }
+    public int getY() { 
+        return y; 
     }
 
-    public int getY() {
-        return y;
-    }
+    public void setFacingDirection(Direction dir) { this.facingDirection = dir; }
+    public Direction getFacingDirection() { return facingDirection; }
 
-    public void setFacing(Direction d) {
-        this.facing = d;
-    }
-
-    public Direction getFacing() {
-        return facing;
-    }
-
-    public boolean setEquipment(Equipment equipment) {
-        if (this.equipment == null) {
-            this.equipment = equipment;
+    // --- Inventory Logic ---
+    
+    // The "Brain" of adding items: Tries Equipment first, then Hands
+    public boolean addProduct(Product p) {
+        // 1. Try Equipment
+        if (equipment != null) {
+            if (equipment.addProduct(p)) 
+                return true;
+            else 
+                return false; // Equipment full
+        }
+        
+        // 2. Try Hands (Max 2 items) [cite: 81]
+        if (handCarried.size() < 2) {
+            handCarried.add(p);
             return true;
         }
+        
+        System.out.println("Hands are full! Get a cart or basket.");
         return false;
     }
 
-    public void setCheckedOut(boolean checkedOut) {
-        this.checkedOut = checkedOut;
+    public void setEquipment(Equipment e) { 
+        this.equipment = e; 
     }
-
-    public void setExited(boolean exited) {
-        this.exited = exited;
+    public Equipment getEquipment() { 
+        return equipment; 
     }
-
-    public Equipment removeEquipment() {
-        Equipment temp = this.equipment;
-        this.equipment = null;
-        return temp;
+    
+    public void removeEquipment() { 
+        this.equipment = null; 
     }
-
-    public boolean addToHandCarried(Products product) {
-        if (handCarried.size() >= 2)
-            return false;
-        handCarried.add(product);
-        return true;
+    
+    public ArrayList<Product> getHandCarried() { 
+        return handCarried; 
     }
-
-    public boolean removeFromHandCarried(Products product) {
-        return handCarried.remove(product);
-    }
-
-    public Products removeFromHandCarriedByIndex(int index) {
-        if (index < 0 || index >= handCarried.size())
-            return null;
-        return handCarried.remove(index);
-    }
-
-    public boolean addProduct(Products product) {
-        if (this.equipment != null && equipment.addProduct(product)) {
-            return true;
-        } else if (handCarried.size() < 2) {
-            return addToHandCarried(product);
-        }
-        return false;
-    }
-
-    public boolean removeProduct(Products product) {
-        if (equipment != null && equipment.removeProduct(product)) {
-            return true;
-        }
-        return removeFromHandCarried(product);
-    }
-
-    public ArrayList<Products> getAllProducts() {
-        ArrayList<Products> allProducts = new ArrayList<>(handCarried);
+    
+    public ArrayList<Product> getAllProducts() {
+        ArrayList<Product> all = new ArrayList<>(handCarried);
         if (equipment != null) {
-            allProducts.addAll(equipment.getProducts());
+            all.addAll(equipment.getContents());
         }
-        return allProducts;
+        return all;
+    }
+    
+    // Clears everything (Used after Checkout)
+    public void clearInventory() {
+        if (equipment != null) equipment.clear();
+        handCarried.clear();
     }
 
-    public int getTotalProductCount() {
-        int count = handCarried.size();
-        if (equipment != null) {
-            count += equipment.getProducts().size();
-        }
-        return count;
-    }
-
-    public boolean canPurchase(Products product) {
+    // --- Status & Rules ---
+    
+    public boolean canPurchase(Product p) {
         if (age < 18) {
-            String productType = product.getProductType();
-            if (productType.equals("ALCOHOL") || productType.equals("CLEANING")) {
+            String type = p.getProductType().toUpperCase();
+            // Restrictions for minors [cite: 29]
+            if (type.equals("ALCOHOL") || type.equals("CLEANING") || type.equals("CLEANING AGENT")) {
                 return false;
             }
         }
         return true;
     }
 
-    public double applyDiscount(Products product) {
-        double originalPrice = product.getPrice();
-        if (age >= 60 && product.isConsumable() && !product.getProductType().equals("ALCOHOL")) {
-            if (product.isBeverage()) {
-                return originalPrice * 0.90;
-            } else {
-                return originalPrice * 0.80;
-            }
-        }
-        return originalPrice;
+    public String getName() { 
+        return name; 
     }
-
-    public void clearAllProducts() {
-        if (equipment != null) {
-            equipment.getProducts().clear();
-        }
-        handCarried.clear();
+    public int getAge() {
+        return age; 
     }
-
-    public boolean isEquipmentEmpty() {
-        return equipment == null || equipment.isEmpty();
+   
+    
+    public boolean hasCheckedOut() { 
+        return checkedOut; 
+    }
+    
+    public void setCheckedOut(boolean b) { 
+        this.checkedOut = b; 
+    }
+    
+    public boolean hasExited() { 
+        return exited; 
+    }
+    
+    public void setExited(boolean b) { 
+        this.exited = b; 
     }
 }
