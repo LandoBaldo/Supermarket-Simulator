@@ -1,151 +1,235 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+
+/**
+ *
+ * @author Gabriel
+ */
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Arrays;
 
 public class Map {
-    private String[][] map;
+    private String[][] grid;
     private int width;
     private int height;
 
-    // StorageUnits
     private ArrayList<Table> tables;
-    private ArrayList<ChilledCounters> ChilledCounters;
-    private ArrayList<Shelf> Shelf;
-    private ArrayList<Refrigerator> Refrigerators;
-    private ArrayList<Service> Service;
-
-    private ArrayList<int[]> wallPositions;
-
-    private HashMap<String, ArrayList<int[]>> furniturePosition;
+    private ArrayList<Shelf> shelves;
+    private ArrayList<Refrigerator> refrigerators;
+    private ArrayList<Service> services;
+    private ArrayList<ChilledCounter> chilledCounters;
 
     public Map(int width, int height) {
         this.width = width;
         this.height = height;
-        this.map = new String[height][width];
+        this.grid = new String[height][width];
 
         this.tables = new ArrayList<>();
-        this.ChilledCounters = new ArrayList<>();
-        this.Shelf = new ArrayList<>();
-        this.Refrigerators = new ArrayList<>();
-        this.Service = new ArrayList<>();
+        this.shelves = new ArrayList<>();
+        this.refrigerators = new ArrayList<>();
+        this.services = new ArrayList<>();
+        this.chilledCounters = new ArrayList<>();
 
         initializeEmptyMap();
+        initializeGroundFloor();
     }
 
-    public void initializeEmptyMap() {
-        for (String[] row : map) {
+    private void initializeEmptyMap() {
+        for (String[] row : grid)
             Arrays.fill(row, " ");
-        }
     }
 
-    // Super simple wall methods - just modify the map
-    public void addWall(int x, int y) {
-        if (isValidPosition(x, y)) {
-            map[y][x] = "█";
-        }
-    }
-
-    public void addPerimeterWalls() {
+    private void initializeGroundFloor() {
+        // 1. OUTER BORDER (#) - Rows 0 and 21, Columns 0 and 21
         for (int x = 0; x < width; x++) {
-            addWall(x, 0);
-            addWall(x, height - 1);
+            grid[0][x] = "#";
+            grid[height - 1][x] = "#";
         }
         for (int y = 0; y < height; y++) {
-            addWall(0, y);
-            addWall(width - 1, y);
+            grid[y][0] = "#";
+            grid[y][width - 1] = "#";
+        }
+
+        // 2. ROW 1: CHILLED COUNTERS (Light blue sections)
+        addBlockOfChilledCounters(1, 6, 1, 1);    // Columns 1-6
+        addBlockOfChilledCounters(8, 13, 1, 1);   // Columns 8-13
+        addBlockOfChilledCounters(15, 20, 1, 1);  // Columns 15-20
+
+        // 3. ROWS 4-7: TOP AISLE SECTION
+        addBlockOfShelves(2, 3, 4, 7);     // Left shelves (columns 2-3)
+        addBlockOfShelves(6, 7, 4, 7);     // Mid-left shelves (columns 6-7)
+        addBlockOfTables(10, 11, 4, 7);    // Center-left tables (columns 10-11)
+        addBlockOfShelves(14, 15, 4, 7);   // Center-right shelves (columns 14-15)
+        addBlockOfShelves(18, 19, 4, 7);   // Right shelves (columns 18-19)
+
+        // 4. ROWS 10-13: BOTTOM AISLE SECTION (mirrors top)
+        addBlockOfShelves(2, 3, 10, 13);
+        addBlockOfShelves(6, 7, 10, 13);
+        addBlockOfTables(10, 11, 10, 13);
+        addBlockOfShelves(14, 15, 10, 13);
+        addBlockOfShelves(18, 19, 10, 13);
+
+        // 5. ROW 15: SERVICE STATIONS
+        addService(new Service(Service.ServiceType.PRODUCT_SEARCH, 1, 15));   // Left search
+        addService(new Service(Service.ServiceType.STAIRS, 8, 15));           // Stairs at column 8
+        addService(new Service(Service.ServiceType.STAIRS, 13, 15));          // Right stairs
+        addService(new Service(Service.ServiceType.PRODUCT_SEARCH, 20, 15));  // Right search
+
+        // 6. ROW 17-18: 2x2 WALL in front of entrance (columns 10-11, rows 17-18)
+        addBlockOfWalls(17, 18, 10, 11);
+
+        // 7. ROW 18: CHECKOUT COUNTERS with walls between them
+        // Walls at: 1, 3, 5, 7, 14, 16, 18, 20 (removed 9)
+        int[] wallCols18 = {1, 3, 5, 7, 14, 16, 18, 20};
+        for (int x : wallCols18) {
+            if (x != 10 && x != 11) { // Don't overwrite entrance wall
+                addBlockOfWalls(18, 18, x, x);
+            }
+        }
+
+        // Checkout counters ($) at exact positions
+        int[] checkoutCols = {2, 4, 6, 8, 13, 15, 17, 19};
+        for (int x : checkoutCols) {
+            addService(new Service(Service.ServiceType.CHECKOUT_COUNTER, x, 18));
+        }
+
+        // 8. ROW 20: BASKET/CART STATIONS (removed walls at 6 and 13)
+        addService(new Service(Service.ServiceType.BASKET_STATION, 1, 20));
+        addService(new Service(Service.ServiceType.CART_STATION, 20, 20));
+
+        // 9. ROW 21: ENTRANCE at columns 10-11
+        addService(new Service(Service.ServiceType.ENTRANCE, 10, 21));
+        addService(new Service(Service.ServiceType.ENTRANCE, 11, 21));
+    }
+
+    // Add this helper method for chilled counters
+    private void addBlockOfChilledCounters(int xStart, int xEnd, int yStart, int yEnd) {
+        for (int y = yStart; y <= yEnd; y++)
+            for (int x = xStart; x <= xEnd; x++)
+                addAmenity(new ChilledCounter(), x, y, "C", chilledCounters);
+    }
+    // --- HELPER METHODS (Standardized: xStart, xEnd, yStart, yEnd) ---
+
+    private void addBlockOfWalls(int yStart, int yEnd, int xStart, int xEnd) {
+        for (int y = yStart; y <= yEnd; y++)
+            for (int x = xStart; x <= xEnd; x++)
+                if (isValid(x, y))
+                    grid[y][x] = "=";
+    }
+
+    private void addBlockOfTables(int xStart, int xEnd, int yStart, int yEnd) {
+        for (int y = yStart; y <= yEnd; y++)
+            for (int x = xStart; x <= xEnd; x++)
+                addAmenity(new Table(), x, y, "T", tables);
+    }
+
+    private void addBlockOfShelves(int xStart, int xEnd, int yStart, int yEnd) {
+        for (int y = yStart; y <= yEnd; y++)
+            for (int x = xStart; x <= xEnd; x++)
+                addAmenity(new Shelf(), x, y, "H", shelves);
+    }
+
+    private void addBlockOfRefrigerators(int yStart, int yEnd, int xStart, int xEnd) {
+        for (int y = yStart; y <= yEnd; y++)
+            for (int x = xStart; x <= xEnd; x++)
+                addAmenity(new Refrigerator(), x, y, "R", refrigerators);
+    }
+
+    private <T extends StorageUnit> void addAmenity(T obj, int x, int y, String symbol, ArrayList<T> list) {
+        if (isValid(x, y)) {
+            obj.setX(x);
+            obj.setY(y);
+            list.add(obj);
+            grid[y][x] = symbol;
         }
     }
 
-    // Simple furniture placement methods
-    public void addTable(Table table, int x, int y) {
-        if (isValidPosition(x, y) && map[y][x].equals(" ")) {
-            tables.add(table);
-            map[y][x] = "T";
+    public void addService(Service s) {
+        if (isValid(s.getX(), s.getY())) {
+            services.add(s);
+            String symbol = "S";
+            switch (s.getType()) {
+                case CART_STATION:
+                    symbol = "K";
+                    break;
+                case BASKET_STATION:
+                    symbol = "B";
+                    break;
+                case CHECKOUT_COUNTER:
+                    symbol = "$";
+                    break;
+                case STAIRS:
+                    symbol = "^";
+                    break;
+                case ENTRANCE:
+                    symbol = "E";
+                    break;
+                case PRODUCT_SEARCH:
+                    symbol = "?";
+                    break;
+            }
+            grid[s.getY()][s.getX()] = symbol;
         }
     }
 
-    public void addChilledCounter(ChilledCounters cc, int x, int y) {
-        if (isValidPosition(x, y) && map[y][x].equals(" ")) {
-            ChilledCounters.add(cc);
-            map[y][x] = "C";
-        }
-    }
-
-    public void addRefrigerator(Refrigerator ref, int x, int y) {
-        if (isValidPosition(x, y) && map[y][x].equals(" ")) {
-            Refrigerators.add(ref);
-            map[y][x] = "R";
-        }
-    }
-
-    public void addShelf(Shelf shelf, int x, int y) {
-        if (isValidPosition(x, y) && map[y][x].equals(" ")) {
-            Shelf.add(shelf);
-            map[y][x] = "H";
-        }
-    }
-
-    // FIXED: Changed from private to public so MovementController can access it
-    public boolean isValidPosition(int x, int y) {
+    public boolean isValid(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    /*
-     * Get cell value at (x, y). Returns null if out of bounds.
-     */
-    public String getCell(int x, int y) {
-        if (!isValidPosition(x, y)) {
-            return null;
-        }
-        return map[y][x];
-    }
-
-    // FIXED: The logic was inverted - it was returning when position WAS valid
-    public void setCell(int x, int y, String value) {
-        if (!isValidPosition(x, y))
-            return;
-        map[y][x] = value;
-    }
-
-    // Walkability Rule
     public boolean isWalkable(int x, int y) {
-        if (!isValidPosition(x, y))
+        if (!isValid(x, y))
             return false;
-        String cell = map[y][x];
-        return " ".equals(cell);
+        String cell = grid[y][x];
+        String nonWalkable = "#=HTR";
+        return !nonWalkable.contains(cell);
     }
 
-    public int getWidth() {
-        return width;
+    public String getCell(int x, int y) {
+        return isValid(x, y) ? grid[y][x] : null;
     }
 
-    public int getHeight() {
-        return height;
+    public void setCell(int x, int y, String val) {
+        if (isValid(x, y))
+            grid[y][x] = val;
     }
 
     public void printMap() {
         System.out.print("   ");
-        for (int j = 0; j < width; j++) {
+        for (int j = 0; j < width; j++)
             System.out.printf("%2d ", j);
-        }
         System.out.println();
-
         for (int i = 0; i < height; i++) {
             System.out.printf("%2d ", i);
-            for (int j = 0; j < width; j++) {
-                System.out.print(map[i][j] + "  ");
-            }
+            for (int j = 0; j < width; j++)
+                System.out.print(grid[i][j] + "  ");
             System.out.println();
         }
     }
 
-    public void printStats() {
-        System.out.println("\n=== SUPERMARKET LAYOUT ===");
-        System.out.println("Tables: " + tables.size());
-        System.out.println("Chilled Counters: " + ChilledCounters.size());
-        System.out.println("Refrigerators: " + Refrigerators.size());
-        System.out.println("Shelves: " + Shelf.size());
+    public ArrayList<Table> getTables() {
+        return tables;
     }
 
+    public ArrayList<Shelf> getShelves() {
+        return shelves;
+    }
+
+    public ArrayList<Refrigerator> getRefrigerators() {
+        return refrigerators;
+    }
+
+    public ArrayList<Service> getServices() {
+        return services;
+    }
+
+    public Service getServiceAt(int x, int y) {
+        for (Service s : services)
+            if (s.getX() == x && s.getY() == y)
+                return s;
+        return null;
+    }
 }
