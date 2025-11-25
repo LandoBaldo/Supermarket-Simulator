@@ -1,11 +1,14 @@
-import java.util.ArrayList;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 
-class Shelf extends StorageUnit {
-    public Shelf(int capacity) {
-        super(capacity);
-    }
-
+/**
+ *
+ * @author Gabriel
+ */
+public class Shelf extends StorageUnit {
     public Shelf() {
-        this(8);
+        super(2, 4); // 2 Tiers, 4 Capacity
     }
 }
