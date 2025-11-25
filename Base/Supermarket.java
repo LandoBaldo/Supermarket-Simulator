@@ -12,7 +12,6 @@ package Base;
 import Base.Equipment;
 import Base.Product;
 import Base.Products.*;
-import products.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -45,6 +44,10 @@ public class Supermarket {
     }
 
     private void syncLocations() {
+        // Clear existing maps before re-syncing (prevents stale entries across floors)
+        storageLocations.clear();
+        serviceLocations.clear();
+
         for(Table t : map.getTables()) storageLocations.put(t.getX() + "," + t.getY(), t);
         for(Shelf s : map.getShelves()) storageLocations.put(s.getX() + "," + s.getY(), s);
         for(Refrigerator r : map.getRefrigerators()) storageLocations.put(r.getX() + "," + r.getY(), r);
@@ -140,6 +143,35 @@ public class Supermarket {
         }
 
         System.out.println(result);
+
+        // Product search interaction: ask shopper for product name and show addresses
+        if (s.getType() == Service.ServiceType.PRODUCT_SEARCH) {
+            java.util.Scanner sc = new java.util.Scanner(System.in);
+            System.out.print("Product name: ");
+            String query = sc.nextLine().trim();
+            if (query.isEmpty()) { System.out.println("No product name entered."); return; }
+
+            java.util.ArrayList<String> found = new java.util.ArrayList<>();
+            for (String key : storageLocations.keySet()) {
+                StorageUnit unit = storageLocations.get(key);
+                for (Product p : unit.getProducts()) {
+                    String pname = p.getName();
+                    if (pname != null && pname.toLowerCase().contains(query.toLowerCase())) {
+                        found.add(key);
+                        break;
+                    }
+                }
+            }
+
+            if (found.isEmpty()) {
+                System.out.println("Product not found anywhere in the supermarket.");
+            } else {
+                System.out.println("Product found at the following display addresses:");
+                for (String addr : found) System.out.println(addr);
+            }
+
+            return;
+        }
 
         if (s.getType() == Service.ServiceType.CART_STATION && shopper.getEquipment() == null) {
             shopper.setEquipment(new Cart());
