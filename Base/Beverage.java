@@ -1,6 +1,6 @@
 package Base;
 
-public class Beverage extends Product {
+public abstract class Beverage extends Product {
 
     /**
      * Constructor for consumable products.
@@ -42,3 +42,4 @@ public class Beverage extends Product {
                 productType, name, serialNumber, displayLocation, price);
     }
 }
+
