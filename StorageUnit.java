@@ -1,55 +1,71 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+
+/**
+ *
+ * @author Gabriel
+ */
+import Base.Product;
 import java.util.ArrayList;
 
-public class StorageUnit {
-    protected int capacity;
-    protected ArrayList<Products> products;
+public class abstract StorageUnit {
+    protected int numTiers;
+    protected int capacityPerTier;
+    protected ArrayList<ArrayList<Product>> tiers;
+    
+    // Coordinates (Crucial for Map)
+    protected int x;
+    protected int y;
 
-    public StorageUnit(int capacity) {
-        this.capacity = capacity;
-        this.products = new ArrayList<>();
+    public StorageUnit(int numTiers, int capacityPerTier) {
+        this.numTiers = numTiers;
+        this.capacityPerTier = capacityPerTier;
+        this.tiers = new ArrayList<>();
+        
+        // Initialize tiers
+        for (int i = 0; i < numTiers; i++) {
+            tiers.add(new ArrayList<>());
+        }
     }
 
-    public boolean addProduct(Products product) {
-        if (products.size() < capacity) {
-            products.add(product);
-            System.out.println("Product " + product.getName() + " added to storage.");
-            return true;
+    // --- Adding Products ---
+    
+    // Auto-add to first available spot (Used for initializing store)
+    public boolean addProduct(Product p) {
+        for (ArrayList<Product> tier : tiers) {
+            if (tier.size() < capacityPerTier) {
+                tier.add(p);
+                return true;
+            }
         }
-        System.out.println("Storage full! Cannot add more products. Capacity: " + capacity);
         return false;
     }
 
-    public boolean removeProduct(Products product) {
-        if (products.contains(product)) {
-            products.remove(product);
-            System.out.println("Product " + product.getName() + " removed from storage.");
-            return true;
+    // --- Removing Products ---
+    
+    public boolean removeProduct(Product p) {
+        for (ArrayList<Product> tier : tiers) {
+            if (tier.contains(p)) {
+                tier.remove(p);
+                return true;
+            }
         }
-        System.out.println("Product not found in storage.");
         return false;
     }
 
-    public ArrayList<Products> displayProducts() {
-        System.out.println("Products in storage:");
-        for (Products product : products) {
-            System.out.println("  - " + product);
-        }
-        return products;
+    // --- Getters/Setters ---
+    
+    public ArrayList<Product> getProducts() {
+        ArrayList<Product> all = new ArrayList<>();
+        for (ArrayList<Product> tier : tiers) all.addAll(tier);
+        return all;
     }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public ArrayList<Products> getProducts() {
-        return products;
-    }
-
-    public int getCurrentCount() {
-        return products.size();
-    }
-
-    public boolean isFull() {
-        return products.size() >= capacity;
-    }
+    
+    public void setX(int x) { this.x = x; }
+    public void setY(int y) { this.y = y; }
+    public int getX() { return x; }
+    public int getY() { return y; }
 }
