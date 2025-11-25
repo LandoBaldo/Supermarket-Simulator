@@ -1,23 +1,15 @@
-import java.util.ArrayList;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 
-class Table extends StorageUnit {
-    public Table(int capacity) {
-        super(capacity);
-    }
 
+/**
+ *
+ * @author Gabriel
+ */
+public class Table extends StorageUnit {
     public Table() {
-        this(4);
-    }
-
-    // Display products specifically for table
-    public void arrangeProducts() {
-        System.out.println("\n--- Arranging products on Table ---");
-        if (products.isEmpty()) {
-            System.out.println("Table is empty.");
-        } else {
-            for (Products p : products) {
-                System.out.println("  " + p.getName() + " placed on table at position");
-            }
-        }
+        super(1, 4); // 1 Tier, 4 Capacity
     }
 }
