@@ -1,33 +1,25 @@
-import java.util.ArrayList;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 
-class Refrigerator extends StorageUnit {
-    private double temperature;
 
-    public Refrigerator(int capacity) {
-        super(capacity);
-        this.temperature = 4.0; // Default refrigerator temp
-    }
-
+/**
+ *
+ * @author Gabriel
+ */
+import Base.Product;
+public class Refrigerator extends StorageUnit {
     public Refrigerator() {
-        this(9);
+        super(3, 3); // 3 Tiers, 3 Capacity
     }
-
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-        System.out.println("Temperature set to: " + temperature + "°C");
-    }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public boolean addProductWithCheck(Products product) {
-        // Check if product should be in refrigerator
-        if (!product.getDisplayLocation().equals("Refrigerator")) {
-            System.out.println("Warning: " + product.getName() +
-                    " is meant for " + product.getDisplayLocation() +
-                    ", not Refrigerator!");
+    
+    // Validation check for products
+    @Override
+    public boolean addProduct(Product p) {
+        if (!p.getDisplayLocation().equalsIgnoreCase("Refrigerator")) {
+            System.out.println("Warning: " + p.getName() + " belongs in " + p.getDisplayLocation());
         }
-        return super.addProduct(product);
+        return super.addProduct(p);
     }
 }
