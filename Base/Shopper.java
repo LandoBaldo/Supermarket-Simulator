@@ -9,7 +9,7 @@ package Base;
  * @author Gabriel
  */
 import java.util.ArrayList;
-
+import Base.Product;
 public class Shopper {
     private String name;
     private int age;
@@ -124,6 +124,18 @@ public class Shopper {
         return true;
     }
 
+    public double applyDiscount(Product p) {
+        if(age >= 60) {
+            String consumableType = p.getConsumableType().name();
+            String productType = p.getProductType().toUpperCase();
+            if (consumableType.equals("CONSUMABLE")) {
+                return p.getPrice() * 0.8; // 10% discount
+            } else if(consumableType.equals("BEVERAGE") && !productType.equals("ALCOHOL")) {
+                return p.getPrice() * 0.9; // 15% discount
+            }
+        }
+        return p.getPrice();
+    }
     public String getName() { 
         return name; 
     }
