@@ -1,118 +1,116 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+/**
+ * Represents a shopper in the supermarket simulation.
+ * Handles movement, inventory management, discounts, and purchasing logic.
+ * 
+ * @author Gabriel
+ * @version 1.0.6
+ * @see Senior
+ * @see Product
+ * @see Equipment
  */
 package Base;
-
-/**
- *
- * @author Gabriel
- */
 import java.util.ArrayList;
-
 public class Shopper {
     private String name;
     private int age;
-    private double money;  // NEW: Money balance for BONUS feature
-    
-    // Position
+    private double money;
     private int x;
     private int y;
-    
-    // Direction Enum (Used for Vision)
-    public enum Direction { NORTH, SOUTH, WEST, EAST }
     private Direction facingDirection;
-
-    // Inventory
     private Equipment equipment;
     private ArrayList<Product> handCarried;
-    
-    // Status Flags
     private boolean checkedOut = false;
     private boolean exited = false;
 
+    /**
+     * Direction enum for shopper orientation.
+     */
+    public enum Direction { NORTH, SOUTH, WEST, EAST }
+
+    /**
+     * Constructs a new shopper with specified name and age.
+     * Initializes money based on age group.
+     * 
+     * @param name the shopper's name
+     * @param age the shopper's age
+     */
     public Shopper(String name, int age) {
         this.name = name;
         this.age = age;
         this.handCarried = new ArrayList<>();
-        this.facingDirection = Direction.NORTH; // Default facing
+        this.facingDirection = Direction.NORTH;
         
-        // NEW: Initialize money based on age (BONUS feature)
         if (age < 18) {
-            this.money = 300.0;  // Minors start with ₱300
+            this.money = 300.0;
         } else if (age >= 60) {
-            this.money = 700.0;  // Seniors start with ₱700
+            this.money = 700.0;
         } else {
-            this.money = 500.0;  // Adults start with ₱500
+            this.money = 500.0;
         }
     }
     
     /**
-     * Applies discount to a product based on shopper type
+     * Applies discount to a product based on shopper type.
+     * Only seniors get discounts on eligible items.
      * 
-     * @param p Product to apply discount to
-     * @return Final price after discount
+     * @param p product to apply discount to
+     * @return final price after discount
      */
     public double applyDiscount(Product p) {
-        // Only seniors get discounts
         if (age >= 60) {
             String type = p.getProductType().toUpperCase();
             double originalPrice = p.getPrice();
 
-            // No discount on alcohol
             if (type.equals("ALCOHOL")) {
                 return originalPrice;
             }
 
-            // 10% off beverages
             if (p.getConsumableType() == Product.ConsumableType.BEVERAGE) {
-                return originalPrice * 0.90; // 10% off
+                return originalPrice * 0.90;
             }
 
-            // 20% off consumables (food)
             if (p.getConsumableType() == Product.ConsumableType.CONSUMABLE) {
-                return originalPrice * 0.80; // 20% off
+                return originalPrice * 0.80;
             }
         }
 
-        // No discount for adults and minors
         return p.getPrice();
     }
     
     /**
-     * Gets the price this shopper pays for a product (with discounts applied)
-     * This is used for calculating checkout totals
+     * Gets the price this shopper pays for a product with discounts applied.
      * 
-     * @param p Product to get price for
-     * @return Price after any applicable discounts
+     * @param p product to get price for
+     * @return price after any applicable discounts
      */
     public double getPriceFor(Product p) {
         return applyDiscount(p);
     }
 
+    /**
+     * Displays the shopper's current inventory including hand-carried items,
+     * equipment contents, and total value.
+     */
     public void displayInventory() {
         System.out.println("\n╔════ CURRENT INVENTORY ════╗");
         System.out.println("║ Shopper: " + name);
-        System.out.printf("║ Balance: ₱%.2f\n", money);  // NEW: Show money balance
+        System.out.printf("║ Balance: ₱%.2f\n", money);
         
         double total = 0.0;
 
-        // 1. Show Hand-Carried Items
         System.out.println("╠══ Hand Carried (" + handCarried.size() + "/2) ══");
         if (handCarried.isEmpty()) {
             System.out.println("║   (Empty)");
         } else {
             for (Product p : handCarried) {
-                double price = getPriceFor(p);  // Use discounted price
+                double price = getPriceFor(p);
                 System.out.printf("║ - %-15s ₱%.2f\n", p.getName(), price);
                 total += price;
             }
         }
 
-        // 2. Show Equipment Items
         if (equipment != null) {
-            // Uses Java reflection to get simple name "Cart" or "Basket"
-            String type = equipment.getClass().getSimpleName(); 
+            String type = equipment.getClass().getSimpleName();
             System.out.println("╠══ " + type + " (" + 
                                equipment.getContents().size() + "/" + 
                                equipment.getCapacity() + ") ══");
@@ -121,7 +119,7 @@ public class Shopper {
                 System.out.println("║   (Empty)");
             } else {
                 for (Product p : equipment.getContents()) {
-                    double price = getPriceFor(p);  // Use discounted price
+                    double price = getPriceFor(p);
                     System.out.printf("║ - %-15s ₱%.2f\n", p.getName(), price);
                     total += price;
                 }
@@ -130,21 +128,21 @@ public class Shopper {
             System.out.println("╠══ Equipment: None");
         }
 
-        // 3. Total
         System.out.println("╠═══════════════════════════");
         System.out.printf("║ TOTAL VALUE:      ₱%.2f\n", total);
         System.out.println("╚═══════════════════════════╝");
     }
 
-    // --- Movement & Vision ---
+    // Movement and position methods
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
-    // Helper setters for MovementController
+    
     public void setX(int x) { 
         this.x = x; 
     }
+    
     public void setY(int y) {
         this.y = y; 
     }
@@ -152,6 +150,7 @@ public class Shopper {
     public int getX() { 
         return x; 
     }
+    
     public int getY() { 
         return y; 
     }
@@ -159,19 +158,15 @@ public class Shopper {
     public void setFacingDirection(Direction dir) { this.facingDirection = dir; }
     public Direction getFacingDirection() { return facingDirection; }
 
-    // --- Inventory Logic ---
-    
-    // The "Brain" of adding items: Tries Equipment first, then Hands
+    // Inventory management methods
     public boolean addProduct(Product p) {
-        // 1. Try Equipment
         if (equipment != null) {
             if (equipment.addProduct(p)) 
                 return true;
             else 
-                return false; // Equipment full
+                return false;
         }
         
-        // 2. Try Hands (Max 2 items)
         if (handCarried.size() < 2) {
             handCarried.add(p);
             return true;
@@ -184,6 +179,7 @@ public class Shopper {
     public void setEquipment(Equipment e) { 
         this.equipment = e; 
     }
+    
     public Equipment getEquipment() { 
         return equipment; 
     }
@@ -204,18 +200,20 @@ public class Shopper {
         return all;
     }
     
-    // Clears everything (Used after Checkout)
     public void clearInventory() {
         if (equipment != null) equipment.clear();
         handCarried.clear();
     }
 
-    // --- Status & Rules ---
-    
+    /**
+     * Checks if the shopper can purchase a product based on age restrictions.
+     * 
+     * @param p the product to check
+     * @return true if purchase is allowed, false otherwise
+     */
     public boolean canPurchase(Product p) {
         if (age < 18) {
             String type = p.getProductType().toUpperCase();
-            // FIXED: Changed to match actual product type string
             if (type.equals("ALCOHOL") || type.equals("CLEANING_AGENTS")) {
                 return false;
             }
@@ -223,51 +221,22 @@ public class Shopper {
         return true;
     }
 
-    public String getName() { 
-        return name; 
-    }
-    public int getAge() {
-        return age; 
-    }
-   
+    // Getters and setters
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public boolean hasCheckedOut() { return checkedOut; }
+    public void setCheckedOut(boolean b) { this.checkedOut = b; }
+    public boolean hasExited() { return exited; }
+    public void setExited(boolean b) { this.exited = b; }
     
-    public boolean hasCheckedOut() { 
-        return checkedOut; 
-    }
-    
-    public void setCheckedOut(boolean b) { 
-        this.checkedOut = b; 
-    }
-    
-    public boolean hasExited() { 
-        return exited; 
-    }
-    
-    public void setExited(boolean b) { 
-        this.exited = b; 
-    }
-    
-    // --- Money Management (NEW - BONUS FEATURE) ---
+    // Money management methods
+    public double getMoney() { return money; }
+    public void setMoney(double money) { this.money = money; }
     
     /**
-     * Gets the shopper's current money balance
-     * @return Current money amount
-     */
-    public double getMoney() {
-        return money;
-    }
-    
-    /**
-     * Sets the shopper's money balance
-     * @param money New balance amount
-     */
-    public void setMoney(double money) {
-        this.money = money;
-    }
-    
-    /**
-     * Adds money to the shopper's balance (used by ATM)
-     * @param amount Amount to add (must be positive)
+     * Adds money to the shopper's balance.
+     * 
+     * @param amount amount to add (must be positive)
      */
     public void addMoney(double amount) {
         if (amount > 0) {
@@ -276,8 +245,9 @@ public class Shopper {
     }
     
     /**
-     * Deducts money from the shopper's balance (used at checkout)
-     * @param amount Amount to deduct
+     * Deducts money from the shopper's balance.
+     * 
+     * @param amount amount to deduct
      * @return true if successful, false if insufficient funds
      */
     public boolean deductMoney(double amount) {
@@ -289,8 +259,9 @@ public class Shopper {
     }
     
     /**
-     * Checks if shopper has enough money for a purchase
-     * @param amount Amount to check
+     * Checks if shopper has enough money for a purchase.
+     * 
+     * @param amount amount to check
      * @return true if shopper has enough money
      */
     public boolean hasEnoughMoney(double amount) {

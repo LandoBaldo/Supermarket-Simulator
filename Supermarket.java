@@ -5,8 +5,12 @@
 package Base;
 
 /**
- *
+ * Main supermarket class that manages the entire supermarket system.
+ * Handles floor management, inventory, shopper interactions, and services.
+ * Provides functionality for product search, checkout, ATM services, and floor navigation.
+ * 
  * @author Gabriel
+ * @version 1.0.6
  */
 
 import Base.Equipment;
@@ -31,7 +35,14 @@ public class Supermarket {
     private HashMap<String, StorageUnit> storageLocations;
     private HashMap<String, Service> serviceLocations;
 
-    // Modified constructor - always start at ground floor (floor 1)
+    /**
+     * Constructs a Supermarket with specified name and dimensions.
+     * Always starts at ground floor (floor 1).
+     *
+     * @param name the name of the supermarket
+     * @param width the width of the supermarket map
+     * @param height the height of the supermarket map
+     */
     public Supermarket(String name, int width, int height) {
         this.name = name;
         this.currentFloor = 1; // Start at ground floor
@@ -44,14 +55,27 @@ public class Supermarket {
         initializeInventory();
     }
     
+    /**
+     * Gets the current map.
+     *
+     * @return the current map object
+     */
     public Map getMap() {
         return map;
     }
     
+    /**
+     * Gets the current floor number.
+     *
+     * @return the current floor number (1 or 2)
+     */
     public int getCurrentFloor() {
         return currentFloor;
     }
 
+    /**
+     * Synchronizes storage and service locations from the map.
+     */
     private void syncLocations() {
         storageLocations.clear();
         serviceLocations.clear();
@@ -59,10 +83,14 @@ public class Supermarket {
         for(Table t : map.getTables()) storageLocations.put(t.getX() + "," + t.getY(), t);
         for(Shelf s : map.getShelves()) storageLocations.put(s.getX() + "," + s.getY(), s);
         for(Refrigerator r : map.getRefrigerators()) storageLocations.put(r.getX() + "," + r.getY(), r);
-        for(ChilledCounter cc : map.getChilledCounters()) storageLocations.put(cc.getX() + "," + cc.getY(), cc);  // ADDED: ChilledCounters!
+        for(ChilledCounter cc : map.getChilledCounters()) storageLocations.put(cc.getX() + "," + cc.getY(), cc);
         for(Service s : map.getServices()) serviceLocations.put(s.getX() + "," + s.getY(), s);
     }
 
+    /**
+     * Initializes inventory for the current floor.
+     * Stock shelves with various products based on floor type.
+     */
     private void initializeInventory() {
         System.out.println("Restocking shelves for floor " + currentFloor + "...");
 
@@ -248,17 +276,32 @@ public class Supermarket {
         }
     }
 
+    /**
+     * Adds a shopper to the supermarket at specified coordinates.
+     *
+     * @param s the shopper to add
+     * @param x the x-coordinate position
+     * @param y the y-coordinate position
+     */
     public void addShopper(Shopper s, int x, int y) {
         s.setPosition(x, y);
         shoppers.add(s);
         map.setCell(x, y, "S");
     }
 
+    /**
+     * Displays the current map to the console.
+     */
     public void displayMap() { 
         System.out.println("=== FLOOR " + currentFloor + " ===");
         map.printMap(); 
     }
 
+    /**
+     * Handles interaction for a shopper with objects in front of them.
+     *
+     * @param shopper the shopper attempting interaction
+     */
     public void handleInteraction(Shopper shopper) {
         FrontCell front = MovementController.getCellInFront(shopper, map);
         if (front == null) { System.out.println("Nothing in front."); return; }
@@ -277,6 +320,12 @@ public class Supermarket {
         System.out.println("Cannot interact with that.");
     }
 
+    /**
+     * Processes service interactions for a shopper.
+     *
+     * @param shopper the shopper interacting with the service
+     * @param s the service being interacted with
+     */
     private void processService(Shopper shopper, Service s) {
         String result = s.interact();
 
@@ -357,8 +406,9 @@ public class Supermarket {
     }
     
     /**
-    * Handles product search interaction - GUI VERSION
-    */
+     * Handles product search interaction - GUI VERSION.
+     * Allows shoppers to search for products by name.
+     */
     private void handleProductSearch() {
         String query = JOptionPane.showInputDialog(null, 
             "🔍 Enter product name to search:", 
@@ -410,7 +460,10 @@ public class Supermarket {
     }
     
     /**
-     * Handles ATM interaction - BONUS FEATURE
+     * Handles ATM interaction - BONUS FEATURE.
+     * Allows shoppers to deposit money and check balance.
+     *
+     * @param shopper the shopper using the ATM
      */
     private void handleATM(Shopper shopper) {
         String[] options = {
@@ -455,8 +508,11 @@ public class Supermarket {
     }
     
     /**
-    * Handles checkout counter interaction - UPDATED WITH MONEY CHECK
-    */
+     * Handles checkout counter interaction - UPDATED WITH MONEY CHECK.
+     * Processes shopper's purchase and generates receipt.
+     *
+     * @param shopper the shopper checking out
+     */
     private void handleCheckout(Shopper shopper) {
         ArrayList<Product> allProducts = shopper.getAllProducts();
 
@@ -503,7 +559,10 @@ public class Supermarket {
     }
 
     /**
-     * Handles exit interaction
+     * Handles exit interaction.
+     * Validates that shopper can leave the supermarket.
+     *
+     * @param shopper the shopper attempting to exit
      */
     private void handleExit(Shopper shopper) {
         // Check if shopper has equipment
@@ -541,6 +600,12 @@ public class Supermarket {
             "Goodbye!", JOptionPane.INFORMATION_MESSAGE);
     }
     
+    /**
+     * Changes the current floor for a shopper.
+     * Handles transitions between floor 1 and floor 2.
+     *
+     * @param shopper the shopper changing floors
+     */
     private void changeFloor(Shopper shopper) {
         // Remember which stairs they used (left or right side)
         int currentX = shopper.getX();
@@ -591,7 +656,11 @@ public class Supermarket {
     }
 
     /**
-     * GUI-FRIENDLY VERSION - Uses JOptionPane instead of Scanner
+     * Processes storage unit interaction - GUI-FRIENDLY VERSION.
+     * Uses JOptionPane instead of Scanner for product selection.
+     *
+     * @param shopper the shopper interacting with storage
+     * @param storage the storage unit being accessed
      */
     private void processStorage(Shopper shopper, StorageUnit storage) {
         ArrayList<Product> products = storage.getProducts();
@@ -664,7 +733,11 @@ public class Supermarket {
     }
     
     /**
-     * Calculates total cost for shopper - BONUS FEATURE
+     * Calculates total cost for shopper - BONUS FEATURE.
+     * Applies appropriate discounts based on shopper type.
+     *
+     * @param shopper the shopper to calculate total for
+     * @return the total cost after discounts
      */
     private double calculateTotal(Shopper shopper) {
         double total = 0.0;
@@ -674,6 +747,11 @@ public class Supermarket {
         return total;
     }
 
+    /**
+     * Generates and saves a receipt for the shopper's purchase.
+     *
+     * @param shopper the shopper to generate receipt for
+     */
     private void generateReceipt(Shopper shopper) {
         try {
             Receipt receipt = new Receipt(shopper);

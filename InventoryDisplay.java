@@ -5,15 +5,21 @@
 package Base;
 
 /**
- *
- * @author Gabriel
+ * Utility class for displaying shopper inventory and equipment information.
+ * Provides both detailed inventory display and compact status information.
+ * 
+ * @author unknown
+ * @version 1.0.6
  */
 import java.util.ArrayList;
 
 public class InventoryDisplay {
     
     /**
-     * Displays the shopper's equipped item and inventory
+     * Displays the shopper's equipped item and inventory in a formatted console output.
+     * Shows equipment type, capacity, weight, and all products with total cost.
+     *
+     * @param shopper the shopper whose inventory to display
      */
     public static void displayInventory(Shopper shopper) {
         System.out.println("\n========== INVENTORY ==========");
@@ -53,7 +59,11 @@ public class InventoryDisplay {
     }
     
     /**
-     * Displays just the equipment status (for HUD)
+     * Displays just the equipment status (for HUD display).
+     * Provides a compact string representation of equipment information.
+     *
+     * @param shopper the shopper whose equipment status to get
+     * @return formatted string containing equipment status information
      */
     public static String getEquipmentStatus(Shopper shopper) {
         Equipment equip = shopper.getEquipment();

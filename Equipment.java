@@ -5,8 +5,11 @@
 package Base;
 
 /**
- *
+ * Abstract base class representing equipment that can hold products.
+ * Provides common functionality for carts, baskets, and other carrying equipment.
+ * 
  * @author Gabriel
+ * @version 1.0.6
  */
 import java.util.ArrayList;
 
@@ -15,8 +18,8 @@ public abstract class Equipment {
     protected ArrayList<Product> contents;
     
     /**
-     * Creates new Equipment with specified capacity
-     * 
+     * Creates new Equipment with specified capacity.
+     *
      * @param capacity Maximum number of products this equipment can hold
      */
     public Equipment(int capacity) {
@@ -25,8 +28,8 @@ public abstract class Equipment {
     }
     
     /**
-     * Gets the maximum capacity of this equipment
-     * 
+     * Gets the maximum capacity of this equipment.
+     *
      * @return Maximum number of products
      */
     public int getCapacity() {
@@ -34,8 +37,8 @@ public abstract class Equipment {
     }
     
     /**
-     * Gets the current number of products in this equipment
-     * 
+     * Gets the current number of products in this equipment.
+     *
      * @return Current number of products
      */
     public int getCurrentLoad() {
@@ -45,7 +48,7 @@ public abstract class Equipment {
     /**
      * Calculates total weight of all products in equipment.
      * For simplicity, each product is assumed to weigh 0.5 kg.
-     * 
+     *
      * @return Total weight in kilograms
      */
     public double getTotalWeight() {
@@ -54,8 +57,8 @@ public abstract class Equipment {
     }
     
     /**
-     * Adds a product to this equipment
-     * 
+     * Adds a product to this equipment.
+     *
      * @param p Product to add
      * @return true if product was added, false if equipment is full
      */
@@ -69,8 +72,8 @@ public abstract class Equipment {
     }
     
     /**
-     * Removes a product from this equipment
-     * 
+     * Removes a product from this equipment.
+     *
      * @param p Product to remove
      */
     public void removeProduct(Product p) {
@@ -78,15 +81,15 @@ public abstract class Equipment {
     }
     
     /**
-     * Clears all products from this equipment
+     * Clears all products from this equipment.
      */
     public void clear() {
         contents.clear();
     }
     
     /**
-     * Gets all products currently in this equipment
-     * 
+     * Gets all products currently in this equipment.
+     *
      * @return ArrayList of products
      */
     public ArrayList<Product> getContents() {
@@ -94,8 +97,8 @@ public abstract class Equipment {
     }
     
     /**
-     * Checks if this equipment is empty
-     * 
+     * Checks if this equipment is empty.
+     *
      * @return true if no products are in equipment, false otherwise
      */
     public boolean isEmpty() {

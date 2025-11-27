@@ -5,8 +5,12 @@
 package Base;
 
 /**
- *
+ * Abstract base class representing a product in the inventory system.
+ * Provides common functionality for all product types including serial number management,
+ * pricing, display location determination, and consumable type classification.
+ * 
  * @author Gabriel
+ * @version 1.0.6
  */
 import java.util.*;
 
@@ -18,11 +22,24 @@ public abstract class Product {
     private String productType;
     private double price;
     
+    /**
+     * Enum representing the different types of consumable products.
+     * 
+     * @author unknown
+     * @version 1.0.6
+     */
     public enum ConsumableType {CONSUMABLE, NON_CONSUMABLE, BEVERAGE}
 
     public ConsumableType consumableType;
 
-    // Constructor
+    /**
+     * Constructs a Product with specified product type, serial number, and name.
+     * Default price and consumable type are determined automatically.
+     *
+     * @param productType the type of product
+     * @param serialNumber the unique identifier for the product
+     * @param name the name of the product
+     */
     public Product(String productType, String serialNumber, String name) {
         this.productType = productType;
         this.serialNumber = serialNumber;
@@ -32,6 +49,15 @@ public abstract class Product {
         this.price = determineDefaultPrice(productType);
     }
 
+    /**
+     * Constructs a Product with all specified parameters.
+     *
+     * @param productType the type of product
+     * @param serialNumber the unique identifier for the product
+     * @param name the name of the product
+     * @param price the price of the product
+     * @param consumableType the consumable type of the product
+     */
     public Product(String productType, String serialNumber, String name, double price,
         ConsumableType consumableType) {
         this.productType = productType;
@@ -42,8 +68,12 @@ public abstract class Product {
         this.consumableType = consumableType;
     }
     
-    
-    // Determine location based on product type
+    /**
+     * Determines the display location based on product type.
+     *
+     * @param type the product type
+     * @return the display location for the product
+     */
     private String determineLocation(String type) {
         switch (type.toUpperCase()) {
             // Chilled counter products
@@ -87,7 +117,11 @@ public abstract class Product {
         }
     }
 
-    // Get serial number prefix based on product type
+    /**
+     * Gets the serial number prefix based on product type.
+     *
+     * @return the three-letter prefix for serial numbers
+     */
     public String getSerialNumberPrefix() {
         switch (productType.toUpperCase()) {
             case "BEEF": return "BEF";
@@ -120,6 +154,12 @@ public abstract class Product {
         }
     }
 
+    /**
+     * Determines the consumable type based on product type.
+     *
+     * @param type the product type
+     * @return the consumable type classification
+     */
     private ConsumableType determineConsumableType(String type) {
         switch (type.toUpperCase()) {
             case "SOFTDRINK":
@@ -147,6 +187,12 @@ public abstract class Product {
         }
     }
 
+    /**
+     * Determines the default price based on product type.
+     *
+     * @param type the product type
+     * @return the default price for the product type
+     */
     private double determineDefaultPrice(String type) {
         switch (type.toUpperCase()) {
             case "BEEF": return 350.0;
@@ -180,22 +226,103 @@ public abstract class Product {
     }
 
     // Getters
+    /**
+     * Gets the serial number of the product.
+     *
+     * @return the serial number
+     */
     public String getSerialNumber() { return serialNumber; }
+    
+    /**
+     * Gets the name of the product.
+     *
+     * @return the product name
+     */
     public String getName() { return name; }
+    
+    /**
+     * Gets the display location of the product.
+     *
+     * @return the display location
+     */
     public String getDisplayLocation() { return displayLocation; }
+    
+    /**
+     * Gets the product type.
+     *
+     * @return the product type
+     */
     public String getProductType() { return productType; }
+    
+    /**
+     * Gets the price of the product.
+     *
+     * @return the product price
+     */
     public double getPrice() { return price; }
+    
+    /**
+     * Gets the consumable type of the product.
+     *
+     * @return the consumable type
+     */
     public ConsumableType getConsumableType() { return consumableType; }
+    
+    /**
+     * Checks if the product is consumable.
+     *
+     * @return true if the product is consumable or a beverage, false otherwise
+     */
     public boolean isConsumable() { return consumableType == ConsumableType.CONSUMABLE || consumableType == ConsumableType.BEVERAGE; }
+    
+    /**
+     * Checks if the product is a beverage.
+     *
+     * @return true if the product is a beverage, false otherwise
+     */
     public boolean isBeverage() { return consumableType == ConsumableType.BEVERAGE; }
+    
+    /**
+     * Checks if the product is non-consumable.
+     *
+     * @return true if the product is non-consumable, false otherwise
+     */
     public boolean isNonConsumable() { return consumableType == ConsumableType.NON_CONSUMABLE; }
 
     // Setters
+    /**
+     * Sets the serial number of the product.
+     *
+     * @param serialNumber the new serial number
+     */
     public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
+    
+    /**
+     * Sets the name of the product.
+     *
+     * @param name the new product name
+     */
     public void setName(String name) { this.name = name; }
+    
+    /**
+     * Sets the price of the product.
+     *
+     * @param price the new product price
+     */
     public void setPrice(double price) { this.price = price; }
+    
+    /**
+     * Sets the consumable type of the product.
+     *
+     * @param consumableType the new consumable type
+     */
     public void setConsumableType(ConsumableType consumableType) { this.consumableType = consumableType; }
 
+    /**
+     * Sets the product type and updates related properties.
+     *
+     * @param productType the new product type
+     */
     public void setProductType(String productType) {
         this.productType = productType;
         this.displayLocation = determineLocation(productType);
@@ -203,7 +330,9 @@ public abstract class Product {
         this.price = determineDefaultPrice(productType);
     }
 
-    // Display product information
+    /**
+     * Displays product information to the console.
+     */
     public void displayInfo() {
         System.out.println("Product Type: " + productType);
         System.out.println("Name: " + name);
@@ -215,6 +344,11 @@ public abstract class Product {
         System.out.println("-------------------");
     }
 
+    /**
+     * Returns a string representation of the product.
+     *
+     * @return a formatted string containing product information
+     */
     @Override
     public String toString() {
         return String.format("%s - %s (SN: %s, Location: %s, $%.2f)",

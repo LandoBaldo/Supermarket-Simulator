@@ -5,8 +5,12 @@
 package Base;
 
 /**
- *
+ * Represents the supermarket map with grid layout, storage units, and services.
+ * Handles floor initialization, walkability checks, and location management.
+ * Supports multiple floors with different layouts and amenities.
+ * 
  * @author Gabriel
+ * @version 1.0.6
  */
 
 import java.util.ArrayList;
@@ -16,7 +20,7 @@ public class Map {
     private String[][] grid;
     private int width;
     private int height;
-    private int currentFloor;  // ADDED: Track which floor this map represents
+    private int currentFloor;  // Track which floor this map represents
 
     private ArrayList<Table> tables;
     private ArrayList<Shelf> shelves;
@@ -24,10 +28,17 @@ public class Map {
     private ArrayList<Service> services;
     private ArrayList<ChilledCounter> chilledCounters;
 
+    /**
+     * Constructs a Map with specified dimensions and floor number.
+     *
+     * @param width the width of the map grid
+     * @param height the height of the map grid
+     * @param floor the floor number (1 for ground floor, 2 for second floor)
+     */
     public Map(int width, int height, int floor) {
         this.width = width;
         this.height = height;
-        this.currentFloor = floor;  // ADDED: Store the floor number
+        this.currentFloor = floor;  // Store the floor number
         this.grid = new String[height][width];
 
         this.tables = new ArrayList<>();
@@ -44,11 +55,17 @@ public class Map {
         }
     }   
 
+    /**
+     * Initializes the map with empty spaces.
+     */
     private void initializeEmptyMap() {
         for (String[] row : grid)
             Arrays.fill(row, " ");
     }
 
+    /**
+     * Initializes the ground floor layout with specific amenities and services.
+     */
     private void initializeGroundFloor() {
         // 1. OUTER BORDER (#) - Rows 0 and 21, Columns 0 and 21
         for (int x = 0; x < width; x++) {
@@ -114,6 +131,9 @@ public class Map {
         addService(new Service(Service.ServiceType.ENTRANCE, 11, 21));
     }
 
+    /**
+     * Initializes the second floor layout with different amenities and services.
+     */
     private void initializeSecondFloor() {
         // 1. OUTER BORDER (#)
         for (int x = 0; x < width; x++) {
@@ -168,12 +188,28 @@ public class Map {
         addBlockOfTables(14, 18, 20, 20);
     }
 
+    /**
+     * Adds a block of chilled counters to the specified area.
+     *
+     * @param xStart starting x-coordinate
+     * @param xEnd ending x-coordinate
+     * @param yStart starting y-coordinate
+     * @param yEnd ending y-coordinate
+     */
     private void addBlockOfChilledCounters(int xStart, int xEnd, int yStart, int yEnd) {
         for (int y = yStart; y <= yEnd; y++)
             for (int x = xStart; x <= xEnd; x++)
                 addAmenity(new ChilledCounter(), x, y, "C", chilledCounters);
     }
 
+    /**
+     * Adds a block of walls to the specified area.
+     *
+     * @param yStart starting y-coordinate
+     * @param yEnd ending y-coordinate
+     * @param xStart starting x-coordinate
+     * @param xEnd ending x-coordinate
+     */
     private void addBlockOfWalls(int yStart, int yEnd, int xStart, int xEnd) {
         for (int y = yStart; y <= yEnd; y++)
             for (int x = xStart; x <= xEnd; x++)
@@ -181,24 +217,58 @@ public class Map {
                     grid[y][x] = "=";
     }
 
+    /**
+     * Adds a block of tables to the specified area.
+     *
+     * @param xStart starting x-coordinate
+     * @param xEnd ending x-coordinate
+     * @param yStart starting y-coordinate
+     * @param yEnd ending y-coordinate
+     */
     private void addBlockOfTables(int xStart, int xEnd, int yStart, int yEnd) {
         for (int y = yStart; y <= yEnd; y++)
             for (int x = xStart; x <= xEnd; x++)
                 addAmenity(new Table(), x, y, "T", tables);
     }
 
+    /**
+     * Adds a block of shelves to the specified area.
+     *
+     * @param xStart starting x-coordinate
+     * @param xEnd ending x-coordinate
+     * @param yStart starting y-coordinate
+     * @param yEnd ending y-coordinate
+     */
     private void addBlockOfShelves(int xStart, int xEnd, int yStart, int yEnd) {
         for (int y = yStart; y <= yEnd; y++)
             for (int x = xStart; x <= xEnd; x++)
                 addAmenity(new Shelf(), x, y, "H", shelves);
     }
 
+    /**
+     * Adds a block of refrigerators to the specified area.
+     *
+     * @param xStart starting x-coordinate
+     * @param xEnd ending x-coordinate
+     * @param yStart starting y-coordinate
+     * @param yEnd ending y-coordinate
+     */
     private void addBlockOfRefrigerators(int xStart, int xEnd, int yStart, int yEnd) {
         for (int y = yStart; y <= yEnd; y++)
             for (int x = xStart; x <= xEnd; x++)
                 addAmenity(new Refrigerator(), x, y, "R", refrigerators);
     }
 
+    /**
+     * Generic method to add amenities to the map with proper addressing.
+     *
+     * @param <T> the type of storage unit
+     * @param obj the storage unit object to add
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @param symbol the map symbol to use
+     * @param list the list to add the object to
+     */
     private <T extends StorageUnit> void addAmenity(T obj, int x, int y, String symbol, ArrayList<T> list) {
         if (isValid(x, y)) {
             obj.setX(x);
@@ -217,6 +287,11 @@ public class Map {
         }
     }
 
+    /**
+     * Adds a service to the map at the specified position.
+     *
+     * @param s the service to add
+     */
     public void addService(Service s) {
         if (isValid(s.getX(), s.getY())) {
             services.add(s);
@@ -248,10 +323,24 @@ public class Map {
         }
     }
 
+    /**
+     * Checks if coordinates are within map boundaries.
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return true if coordinates are valid, false otherwise
+     */
     public boolean isValid(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
+    /**
+     * Checks if a cell is walkable (not blocked by walls or objects).
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return true if the cell is walkable, false otherwise
+     */
     public boolean isWalkable(int x, int y) {
         if (!isValid(x, y))
             return false;
@@ -260,15 +349,32 @@ public class Map {
         return !nonWalkable.contains(cell);
     }
 
+    /**
+     * Gets the cell content at specified coordinates.
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return the cell content, or null if coordinates are invalid
+     */
     public String getCell(int x, int y) {
         return isValid(x, y) ? grid[y][x] : null;
     }
 
+    /**
+     * Sets the cell content at specified coordinates.
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @param val the value to set
+     */
     public void setCell(int x, int y, String val) {
         if (isValid(x, y))
             grid[y][x] = val;
     }
 
+    /**
+     * Prints the map to the console with coordinates.
+     */
     public void printMap() {
         System.out.print("   ");
         for (int j = 0; j < width; j++)
@@ -282,26 +388,58 @@ public class Map {
         }
     }
 
+    /**
+     * Gets all tables on the map.
+     *
+     * @return ArrayList of tables
+     */
     public ArrayList<Table> getTables() {
         return tables;
     }
 
+    /**
+     * Gets all shelves on the map.
+     *
+     * @return ArrayList of shelves
+     */
     public ArrayList<Shelf> getShelves() {
         return shelves;
     }
 
+    /**
+     * Gets all refrigerators on the map.
+     *
+     * @return ArrayList of refrigerators
+     */
     public ArrayList<Refrigerator> getRefrigerators() {
         return refrigerators;
     }
 
+    /**
+     * Gets all services on the map.
+     *
+     * @return ArrayList of services
+     */
     public ArrayList<Service> getServices() {
         return services;
     }
     
+    /**
+     * Gets all chilled counters on the map.
+     *
+     * @return ArrayList of chilled counters
+     */
     public ArrayList<ChilledCounter> getChilledCounters() {
         return chilledCounters;
     }
 
+    /**
+     * Gets the service at specified coordinates.
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return the service at the coordinates, or null if none exists
+     */
     public Service getServiceAt(int x, int y) {
         for (Service s : services)
             if (s.getX() == x && s.getY() == y)
@@ -310,7 +448,11 @@ public class Map {
     }
     
     /**
-     * Helper method to get location name (floor + aisle/wall) based on position
+     * Helper method to get location name (floor + aisle/wall) based on position.
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return formatted location name string
      */
     private String getLocationName(int x, int y) {
         String floorName = (currentFloor == 1) ? "GF" : "2F";
@@ -351,7 +493,10 @@ public class Map {
     }
     
     /**
-     * Helper method to get storage unit type name
+     * Helper method to get storage unit type name.
+     *
+     * @param unit the storage unit
+     * @return the type name of the storage unit
      */
     private String getUnitTypeName(StorageUnit unit) {
         if (unit instanceof Table) return "Table";
