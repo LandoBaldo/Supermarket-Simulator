@@ -1,15 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+/**
+ * Represents a table storage unit with 1 tier and 4 capacity per tier.
+ * 
+ * @author Gabriel
+ * @version 1.0.6
+ * @see StorageUnit
  */
 package Base;
-
-/**
- *
- * @author Gabriel
- */
 public class Table extends StorageUnit {
+    
+    /**
+     * Constructs a new table storage unit.
+     * Initializes with 1 tier and 4 capacity per tier.
+     */
     public Table() {
-        super(1, 4); // 1 Tier, 4 Capacity
+        super(1, 4);
     }
 }

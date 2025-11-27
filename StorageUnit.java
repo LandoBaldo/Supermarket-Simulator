@@ -1,40 +1,45 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+/**
+ * Abstract base class for storage units in the supermarket.
+ * Handles product storage with multiple tiers and capacity management.
+ * 
+ * @author Gabriel
+ * @version 1.0.6
+ * @see Shelf
+ * @see Table
+ * @see Refrigerator
  */
 package Base;
-
-/**
- *
- * @author Gabriel
- */
-import Base.Product;
 import java.util.ArrayList;
-
 public abstract class StorageUnit {
     protected int numTiers;
     private String address;
     protected int capacityPerTier;
     protected ArrayList<ArrayList<Product>> tiers;
-    
-    // Coordinates (Crucial for Map)
     protected int x;
     protected int y;
 
+    /**
+     * Constructs a new storage unit with specified tiers and capacity.
+     * 
+     * @param numTiers number of tiers in the storage unit
+     * @param capacityPerTier maximum products per tier
+     */
     public StorageUnit(int numTiers, int capacityPerTier) {
         this.numTiers = numTiers;
         this.capacityPerTier = capacityPerTier;
         this.tiers = new ArrayList<>();
         
-        // Initialize tiers
         for (int i = 0; i < numTiers; i++) {
             tiers.add(new ArrayList<>());
         }
     }
 
-    // --- Adding Products ---
-    
-    // Auto-add to first available spot (Used for initializing store)
+    /**
+     * Automatically adds product to first available spot.
+     * 
+     * @param p product to add
+     * @return true if successful, false if full
+     */
     public boolean addProduct(Product p) {
         for (ArrayList<Product> tier : tiers) {
             if (tier.size() < capacityPerTier) {
@@ -45,8 +50,12 @@ public abstract class StorageUnit {
         return false;
     }
 
-    // --- Removing Products ---
-    
+    /**
+     * Removes a product from the storage unit.
+     * 
+     * @param p product to remove
+     * @return true if successful, false if product not found
+     */
     public boolean removeProduct(Product p) {
         for (ArrayList<Product> tier : tiers) {
             if (tier.contains(p)) {
@@ -57,37 +66,21 @@ public abstract class StorageUnit {
         return false;
     }
 
-    // --- Getters/Setters ---
-    
+    /**
+     * Gets all products from all tiers.
+     * 
+     * @return list of all products in the storage unit
+     */
     public ArrayList<Product> getProducts() {
         ArrayList<Product> all = new ArrayList<>();
         for (ArrayList<Product> tier : tiers) all.addAll(tier);
         return all;
     }
     
-    public void setAddress(String address) {
-       this.address = address;
-    }
-    
-    public void setX(int x) { 
-        this.x = x; 
-    }
-    
-    public void setY(int y) { 
-        this.y = y; 
-    }
-    
-    public int getX() { 
-        return x; 
-    }
-    
-    public int getY() { 
-        return y; 
-    }
-    
-    public String getAddress() {
-       return address;
-    }
-    
-    
+    public void setAddress(String address) { this.address = address; }
+    public void setX(int x) { this.x = x; }
+    public void setY(int y) { this.y = y; }
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public String getAddress() { return address; }
 }

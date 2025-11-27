@@ -5,20 +5,16 @@
 package Base;
 
 /**
- *
- * @author Gabriel
- */
-/**
  * Represents an adult shopper (18-59 years old).
  * Has no purchase restrictions or special discounts.
  * 
- * @author Gabriel
- * @version 1.0
+ * @author unknown
+ * @version 1.0.6
  */
 public class Adult extends Shopper {
     /**
-     * Creates a new Adult shopper
-     * 
+     * Creates a new Adult shopper.
+     *
      * @param name Shopper's name
      * @param age Shopper's age (should be 18-59)
      */
@@ -26,6 +22,13 @@ public class Adult extends Shopper {
         super(name, age);
     }
     
+    /**
+     * Checks if the adult can purchase a product.
+     * Adults have no restrictions and can purchase everything.
+     *
+     * @param p the product to check
+     * @return true always, as adults have no restrictions
+     */
     @Override
     public boolean canPurchase(Product p) {
         // Adults can purchase everything
@@ -33,10 +36,10 @@ public class Adult extends Shopper {
     }
     
     /**
-     * Gets the price for this shopper (no discount)
-     * 
+     * Gets the price for this shopper (no discount for adults).
+     *
      * @param p Product to get price for
-     * @return Original product price
+     * @return Original product price without any discount
      */
     public double getPriceFor(Product p) {
         return p.getPrice();

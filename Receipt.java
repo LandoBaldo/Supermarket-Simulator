@@ -1,18 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Base;
-
-/**
- *
- * @author Gabriel
- */
-import java.util.ArrayList;
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
 /**
- * Handles receipt generation for supermarket checkout
+ * Handles receipt generation for supermarket checkout.
+ * Calculates totals, discounts, and formats receipt output.
+ * 
+ * @author Gabriel
+ * @version 1.0.6
  */
 public class Receipt {
     private String shopperName;
@@ -24,6 +18,11 @@ public class Receipt {
     private double finalTotal;
     private ArrayList<ProductWithDiscount> ProductWithDiscounts;
 
+    /**
+     * Constructs a new receipt for the given shopper.
+     * 
+     * @param shopper the shopper to generate receipt for
+     */
     public Receipt(Shopper shopper) {
         this.shopperName = shopper.getName();
         this.shopperAge = shopper.getAge();
@@ -32,9 +31,6 @@ public class Receipt {
         calculateTotals(shopper);
     }
 
-    /**
-     * Calculates all totals and discounts
-     */
     private void calculateTotals(Shopper shopper) {
         subtotal = 0;
         totalDiscount = 0;
@@ -50,13 +46,14 @@ public class Receipt {
             totalDiscount = totalDiscount + itemDiscount;
             finalTotal = finalTotal + discountedPrice;
 
-            // Store product with its calculated discount
             ProductWithDiscounts.add(new ProductWithDiscount(product, discountedPrice));
         }
     }
 
     /**
-     * Generates the receipt as a formatted string
+     * Generates the receipt as a formatted string.
+     * 
+     * @return formatted receipt string
      */
     public String generateReceipt() {
         String receipt = "";
@@ -68,7 +65,6 @@ public class Receipt {
         receipt = receipt + "ITEMS PURCHASED:\n";
         receipt = receipt + "----------------------------------------\n";
 
-        // Group Product by type for better display
         ArrayList<ProductGroup> productGroups = groupProduct();
 
         for (ProductGroup group : productGroups) {
@@ -95,7 +91,6 @@ public class Receipt {
         receipt = receipt + String.format("Total Discount: $%.2f\n", totalDiscount);
         receipt = receipt + String.format("FINAL TOTAL: $%.2f\n", finalTotal);
 
-        // Add senior citizen discount note if applicable
         if (shopperAge >= 60 && totalDiscount > 0) {
             receipt = receipt + "Senior Citizen Discount Applied\n";
         }
@@ -106,9 +101,6 @@ public class Receipt {
         return receipt;
     }
 
-    /**
-     * Groups identical Product together
-     */
     private ArrayList<ProductGroup> groupProduct() {
         ArrayList<ProductGroup> groups = new ArrayList<>();
 
@@ -129,9 +121,6 @@ public class Receipt {
         return groups;
     }
 
-    /**
-     * Helper class to store product with its discounted price
-     */
     private class ProductWithDiscount {
         Product product;
         double discountedPrice;
@@ -142,9 +131,6 @@ public class Receipt {
         }
     }
 
-    /**
-     * Helper class to group Product
-     */
     private class ProductGroup {
         Product product;
         int quantity;
@@ -158,38 +144,18 @@ public class Receipt {
     }
 
     /**
-     * Displays receipt to console
+     * Displays receipt to console.
      */
     public void displayReceipt() {
         System.out.println(generateReceipt());
     }
 
     // Getters for receipt data
-    public String getShopperName() {
-        return shopperName;
-    }
-
-    public int getShopperAge() {
-        return shopperAge;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public double getSubtotal() {
-        return subtotal;
-    }
-
-    public double getTotalDiscount() {
-        return totalDiscount;
-    }
-
-    public double getFinalTotal() {
-        return finalTotal;
-    }
-
-    public int getItemCount() {
-        return Product.size();
-    }
+    public String getShopperName() { return shopperName; }
+    public int getShopperAge() { return shopperAge; }
+    public LocalDateTime getDateTime() { return dateTime; }
+    public double getSubtotal() { return subtotal; }
+    public double getTotalDiscount() { return totalDiscount; }
+    public double getFinalTotal() { return finalTotal; }
+    public int getItemCount() { return Product.size(); }
 }
